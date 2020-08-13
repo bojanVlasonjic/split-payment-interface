@@ -1,0 +1,26 @@
+.new-account-form {
+    padding: 2ex;
+}
+
+.radio-holder {
+    padding: 3ex;
+}
+
+.mat-slider {
+    width: 100%;
+    border-radius: 20px;
+    background-color: lightcyan;
+    color: white;
+}
+
+.disabled-slider {
+    opacity: 0.5;
+}
+
+.highlighted-text {
+    text-align: center;
+    font-size: 17px;
+    padding: 2ex;
+}
+
+

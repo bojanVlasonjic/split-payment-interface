@@ -1,12 +1,52 @@
-<div class="pie-chart-container">
+<div class="detail-holder">
+    <h3 class="heading"> Split payment flow </h3>
+
+    <p> Currently configuring for the following article: </p>
+
+    <label class="identifier"> Article id: </label>
+    <label class="text-value"> {{ article.id }} </label>
+    <br/>
+
+    <label class="identifier"> Article name: </label>
+    <label class="text-value"> {{ article.name }} </label>
+    <br/>
+
+    <label class="identifier"> Article price: </label>
+    <label class="text-value"> {{ article.price }} rsd</label>
+</div>
+
+<div class="selector-holder">
+    <div class="row">
+        <div class="col">
+            <button [ngClass]="(accountOption == 'new-account')? 'btn btn-secondary btn-block selector selected' : 'btn btn-secondary btn-block selector'"
+                (click)="accountOptionSelected('new-account')"> 
+                Add new account
+            </button>
+        </div>
+        <div class="col">
+            <button [ngClass]="(accountOption == 'existing-account')? 'btn btn-secondary btn-block selector selected' : 'btn btn-secondary btn-block selector'" 
+                (click)="accountOptionSelected('existing-account')">
+                Select existing account
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="form-holder" *ngIf="accountOption == 'new-account'">
+    <h4 class="option-header">New account</h4>
+    <p class="hint-text">Fill out the information below the create a new account: </p>
+    <app-manage-account [articlePrice]="article.price" (accountEvent)="addNewAccount($event)"></app-manage-account>
+</div>
+
+
+<div class="container chart-holder" *ngIf="pieChartLabels.length > 0 && pieChartData.length > 0">
     <canvas baseChart
             [data]="pieChartData"
             [labels]="pieChartLabels"
             [chartType]="pieChartType"
-            [colors]="labelColors">
+            [colors]="labelColors"
+            (chartClick)="chartClicked($event)">
     </canvas>
 </div>
 
-<button (click)="addShit()">Add shit</button>
-<button (click)="removeShit()"> Remove shit </button>
   

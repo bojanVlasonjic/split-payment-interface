@@ -1,0 +1,16 @@
+.nav-item {
+    color: white;
+    margin-right: 1em;
+    padding: 1ex;
+}
+
+.nav-item:hover {
+    background: lightgray;
+    color: black;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.navbar-brand {
+    margin-right: 3em;
+}

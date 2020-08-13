@@ -1,2 +1,31 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">SPI</a>
+    <button class="navbar-toggler" type="button" (click)="isNavbarCollapsed = !isNavbarCollapsed"
+      data-toggle="collapse" data-target="#spiNavBar" aria-controls="navbarText"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div [ngClass]="isNavbarCollapsed ? 'collapse navbar-collapse show' : 'collapse navbar-collapse'" id="spiNavBar">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item" routerLink="/home">
+                Home 
+            </li>
+            <li class="nav-item" routerLink="/manage-article">
+                New article 
+            </li>
+            <li class="nav-item" routerLink="/my-articles"  >
+                My articles
+            </li>
+        </ul>
 
-<router-outlet></router-outlet>
+        <ul class="navbar-nav">
+            <li class="nav-item"> 
+                Logout 
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <router-outlet></router-outlet>
+</div>

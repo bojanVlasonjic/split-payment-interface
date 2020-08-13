@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PaymentFlowComponent } from './components/payment-flow/payment-flow.component';
+import { ManageArticleComponent } from './components/manage-article/manage-article.component';
+import { ViewArticlesComponent } from './components/view-articles/view-articles.component';
 
 
 const routes: Routes = [
@@ -13,6 +15,14 @@ const routes: Routes = [
     path: 'payment-flow',
     component: PaymentFlowComponent
   },
+  {
+    path: 'manage-article',
+    component: ManageArticleComponent
+  },
+  {
+    path: 'my-articles',
+    component: ViewArticlesComponent
+  }
 ];
 
 @NgModule({
