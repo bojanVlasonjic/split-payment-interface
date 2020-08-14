@@ -38,6 +38,11 @@
     <app-manage-account [articlePrice]="article.price" (accountEvent)="addNewAccount($event)"></app-manage-account>
 </div>
 
+<div class="form-holder" *ngIf="accountOption == 'existing-account'">
+    <h4 class="option-header"> Choose account  </h4>
+    <app-select-account></app-select-account>
+</div>
+
 
 <div class="container chart-holder" *ngIf="pieChartLabels.length > 0 && pieChartData.length > 0">
     <canvas baseChart

@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ManageArticleComponent } from './components/manage-article/manage-article.component';
@@ -10,6 +10,8 @@ import { ChartsModule } from 'ng2-charts';
 import { ManageAccountComponent } from './components/manage-account/manage-account.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatSelectModule } from '@angular/material/select';
+import { SelectAccountComponent } from './components/select-account/select-account.component';
 
 @NgModule({
   declarations: [
@@ -17,15 +19,18 @@ import { MatSliderModule } from '@angular/material/slider';
     ManageArticleComponent,
     ViewArticlesComponent,
     PaymentFlowComponent,
-    ManageAccountComponent
+    ManageAccountComponent,
+    SelectAccountComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ChartsModule,
     FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
-    MatSliderModule
+    MatSliderModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]

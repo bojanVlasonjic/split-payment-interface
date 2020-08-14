@@ -1,7 +1,7 @@
 
 export class Account {
     
-    number: number;
+    number: string;
     name: string;
     investment: number;
 

@@ -1,13 +1,19 @@
-<form class="new-account-form">
+<form class="new-account-form" #accountForm="ngForm" (ngSubmit)="createAccount()">
     <div class="form-group">
         <label>Account number: </label>
-        <input type="number" class="form-control" name="accNum" placeholder="Enter account number..."
-            [(ngModel)]="account.number">
+        <input type="text" class="form-control" name="accNum" id="accNum" placeholder="Enter account number..."
+            [(ngModel)]="account.number" required #accNum="ngModel">
+            <small [hidden]="accNum.valid || accNum.pristine" class="error-message">
+                Account number is required
+            </small>
     </div>
     <div class="form-group">
         <label>Account name: </label>
-        <input type="text" class="form-control" name="accName" placeholder="Enter account name..."
-            [(ngModel)]="account.name">
+        <input type="text" class="form-control" name="accName" id="accName" placeholder="Enter account name..."
+            [(ngModel)]="account.name" required #accName="ngModel">
+            <small [hidden]="accName.valid || accName.pristine" class="error-message">
+                Account name is required
+            </small>
     </div>
 
     <label>How would you like to specify the amount of funds to transfer?</label>
@@ -36,7 +42,9 @@
     <label class="highlighted-text">Amount to transfer: &nbsp; {{ account.investment }} rsd </label>
 
     <br/>
-    <button type="submit" class="btn btn-dark" (click)="createAccount()">Add account</button>
+    <button type="submit" class="btn btn-dark" [disabled]="!accountForm.form.valid">
+        Add account
+    </button>
 </form>
 
 
