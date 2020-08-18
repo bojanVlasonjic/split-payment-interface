@@ -27,11 +27,16 @@ export class PaymentFlowComponent implements OnInit {
     this.accounts = [];
     this.article = new Article();
     this.article.initDummyData();
+
+    this.pieChartLabels.push('Remaining amount');
+    this.pieChartData.push(this.article.price);
+    this.labelColors[0].backgroundColor.push('rgba(169, 169, 169, 1');
     // todo: fetch article
   }
 
 
   addNewAccount($account: Account): void {
+    this.pieChartData[0] -= $account.investment;
     this.accounts.push($account);
     this.pieChartLabels.push($account.name);
     this.pieChartData.push($account.investment);
@@ -61,7 +66,6 @@ export class PaymentFlowComponent implements OnInit {
       }
     }
   }
-
 
   accountOptionSelected(option: string) {
     this.accountOption = option;
