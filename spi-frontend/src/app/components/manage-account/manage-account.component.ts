@@ -10,6 +10,9 @@ export class ManageAccountComponent implements OnInit {
 
   account: Account;
   splitType: string;
+  investmentPercentage: number;
+
+  accNums: Array<number> = [123, 456, 789];
 
   @Output() accountEvent = new EventEmitter<Account>();
   @Input() articlePrice: number;
@@ -43,4 +46,10 @@ export class ManageAccountComponent implements OnInit {
   onPercentualValueChange($event: any) {
     this.account.investment = Math.round(($event.value/100) * this.articlePrice);
   }
+
+  onPercentualInputChange($event: any) {
+    this.account.investment = Math.round(($event.target.value/100) * this.articlePrice);
+  }
+
+
 }

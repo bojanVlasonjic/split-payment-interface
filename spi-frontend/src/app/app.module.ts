@@ -11,6 +11,7 @@ import { ManageAccountComponent } from './components/manage-account/manage-accou
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SelectAccountComponent } from './components/select-account/select-account.component';
 
 @NgModule({
@@ -30,7 +31,8 @@ import { SelectAccountComponent } from './components/select-account/select-accou
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MatSliderModule,
-    MatSelectModule
+    MatSelectModule,
+    MatAutocompleteModule
   ],
   providers: [],
   bootstrap: [AppComponent]

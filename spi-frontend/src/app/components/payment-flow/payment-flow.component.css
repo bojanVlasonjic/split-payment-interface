@@ -5,17 +5,13 @@
     margin: 1ex;
 }
 
-.detail-holder {
-    position: relative;
-    width: 50%;
-    left: 25%;
+.article-holder {
     text-align: center;
     font-size: 18px;
 }
 
 .identifier {
     border-bottom: 1px solid black;
-    
 }
 
 .text-value {
@@ -24,45 +20,6 @@
     font-weight: bold;
 }
 
-.selector {
-    border-radius: 0px !important;
-}
-
-.selector:hover {
-    background-color: lightgray;
-    color: black;
-}
-
-.selected {
-    background-color: lightgray;
-    color: black;
-    border: 1px solid black;
-}
-
-.selector:focus {
-    box-shadow: none !important;
-}
-
-.selector-holder {
-    position: relative;
-    width: 60%;
-    top: 4ex;
-    left: 20%;
-    margin-bottom: 2ex;
-}
-
-.btn-holder {
-    display: inline-block;
-}
-
-.form-holder {
-    position: relative;
-    width: 60%;
-    height: 50%;
-    top: 10%;
-    left: 20%;
-    margin-top: 10ex;
-}
 
 .hint-text {
     padding: 1ex;
@@ -70,10 +27,7 @@
 }
 
 .chart-holder {
-    margin-top: 5ex;
+    min-height: 500px;
 }
 
-.option-header {
-    padding: 1ex;
-}
 

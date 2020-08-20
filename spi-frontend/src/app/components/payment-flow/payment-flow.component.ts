@@ -14,11 +14,10 @@ export class PaymentFlowComponent implements OnInit {
   pieChartData: Array<number> = [];
   labelColors: Array<any> = [{backgroundColor: []}];
   pieChartType: string = 'pie';
+  chartOptions: any = { maintainAspectRatio: false, responsive: true };
 
   article: Article;
   accounts: Array<Account>;
-
-  accountOption: string = '';
 
   constructor() {
   }
@@ -65,10 +64,6 @@ export class PaymentFlowComponent implements OnInit {
         console.log(clickedElementIndex, label, value)
       }
     }
-  }
-
-  accountOptionSelected(option: string) {
-    this.accountOption = option;
   }
 
 }

@@ -1,57 +1,39 @@
-<div class="detail-holder">
-    <h3 class="heading"> Split payment flow </h3>
 
-    <p> Currently configuring for the following article: </p>
+<div class="row justify-content-center">
+    <div class="col-12 article-holder">
+        <h3 class="heading"> Split payment flow </h3>
 
-    <label class="identifier"> Article id: </label>
-    <label class="text-value"> {{ article.id }} </label>
-    <br/>
+        <p> Currently configuring for the following article: </p>
 
-    <label class="identifier"> Article name: </label>
-    <label class="text-value"> {{ article.name }} </label>
-    <br/>
+        <label class="identifier"> Article id: </label>
+        <label class="text-value"> {{ article.id }} </label>
+        <br/>
 
-    <label class="identifier"> Article price: </label>
-    <label class="text-value"> {{ article.price }} rsd</label>
-</div>
+        <label class="identifier"> Article name: </label>
+        <label class="text-value"> {{ article.name }} </label>
+        <br/>
 
-<div class="selector-holder">
-    <div class="row">
-        <div class="col">
-            <button [ngClass]="(accountOption == 'new-account')? 'btn btn-secondary btn-block selector selected' : 'btn btn-secondary btn-block selector'"
-                (click)="accountOptionSelected('new-account')"> 
-                Add new account
-            </button>
-        </div>
-        <div class="col">
-            <button [ngClass]="(accountOption == 'existing-account')? 'btn btn-secondary btn-block selector selected' : 'btn btn-secondary btn-block selector'" 
-                (click)="accountOptionSelected('existing-account')">
-                Select existing account
-            </button>
-        </div>
+        <label class="identifier"> Article price: </label>
+        <label class="text-value"> {{ article.price }} rsd</label>
     </div>
-</div>
 
-<div class="form-holder" *ngIf="accountOption == 'new-account'">
-    <h4 class="option-header">New account</h4>
-    <p class="hint-text">Fill out the information below the create a new account: </p>
-    <app-manage-account [articlePrice]="article.price" (accountEvent)="addNewAccount($event)"></app-manage-account>
-</div>
-
-<div class="form-holder" *ngIf="accountOption == 'existing-account'">
-    <h4 class="option-header"> Choose account  </h4>
-    <app-select-account></app-select-account>
-</div>
+    <div class="col-10">
+        <h4 class="option-header">New account</h4>
+        <p class="hint-text">Fill out the information below the create a new account: </p>
+        <app-manage-account [articlePrice]="article.price" (accountEvent)="addNewAccount($event)"></app-manage-account>
+    </div>
 
 
-<div class="container chart-holder" *ngIf="pieChartLabels.length > 0 && pieChartData.length > 0">
-    <canvas baseChart
-            [data]="pieChartData"
-            [labels]="pieChartLabels"
-            [chartType]="pieChartType"
-            [colors]="labelColors"
-            (chartClick)="chartClicked($event)">
-    </canvas>
+    <div class="col-12 chart-holder" *ngIf="pieChartLabels.length > 0 && pieChartData.length > 0">
+        <canvas baseChart
+                [data]="pieChartData"
+                [labels]="pieChartLabels"
+                [chartType]="pieChartType"
+                [options]="chartOptions"
+                [colors]="labelColors"
+                (chartClick)="chartClicked($event)">
+        </canvas>
+    </div>
 </div>
 
   

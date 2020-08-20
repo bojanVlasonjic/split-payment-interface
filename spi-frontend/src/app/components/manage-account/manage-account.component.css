@@ -14,13 +14,12 @@
 }
 
 .disabled-slider {
-    opacity: 0.5;
+    opacity: 0;
 }
 
 .highlighted-text {
-    text-align: center;
     font-size: 17px;
-    padding: 2ex;
+    padding: 1ex;
 }
 
 .error-message {
