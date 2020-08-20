@@ -1,4 +1,4 @@
-package dipl.spi.spibackend;
+package dipl.spi.spi_backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
