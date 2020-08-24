@@ -1,12 +1,16 @@
 
 export class Account {
     
+    id: number;
+    userId: number;
+    
     number: string;
     name: string;
-    investment: number;
+    recipientName: string;
+    recipientAddress: string;
 
     constructor() {
-        this.investment = 0;
+
     }
 
 }

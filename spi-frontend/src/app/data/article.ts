@@ -1,7 +1,7 @@
 
 export class Article {
     
-    id: string;
+    id: number;
     name: string;
     price: number;
 
@@ -10,7 +10,6 @@ export class Article {
 
     // TODO: delete
     initDummyData(): void {
-        this.id = 'capp123';
         this.name = 'cappucino';
         this.price = 150;
     }

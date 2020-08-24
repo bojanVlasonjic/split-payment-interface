@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Article } from 'src/app/data/article';
-import { Account } from 'src/app/data/account';
+import { PaymentSplit } from 'src/app/data/payment-split';
 
 @Component({
   selector: 'app-payment-flow',
@@ -17,13 +17,13 @@ export class PaymentFlowComponent implements OnInit {
   chartOptions: any = { maintainAspectRatio: false, responsive: true };
 
   article: Article;
-  accounts: Array<Account>;
+  paymentSplits: Array<PaymentSplit>;
 
   constructor() {
   }
 
   ngOnInit() {
-    this.accounts = [];
+    this.paymentSplits = [];
     this.article = new Article();
     this.article.initDummyData();
 
@@ -34,11 +34,11 @@ export class PaymentFlowComponent implements OnInit {
   }
 
 
-  addNewAccount($account: Account): void {
-    this.pieChartData[0] -= $account.investment;
-    this.accounts.push($account);
-    this.pieChartLabels.push($account.name);
-    this.pieChartData.push($account.investment);
+  addNewSplit($paySplit: PaymentSplit): void {
+    this.pieChartData[0] -= $paySplit.amount;
+    this.paymentSplits.push($paySplit);
+    this.pieChartLabels.push($paySplit.account.name);
+    this.pieChartData.push($paySplit.amount);
     this.labelColors[0].backgroundColor.push(this.generateRandomColor());
     setTimeout(() => {
       window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });

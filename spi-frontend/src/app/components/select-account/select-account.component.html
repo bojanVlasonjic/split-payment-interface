@@ -1,9 +1,0 @@
-<form>
-    <h5 *ngIf="accountList.length == 0"> No accounts have been added </h5>
-    <mat-form-field appearance="fill" *ngIf="accountList.length != 0">
-        <mat-label> Accounts: </mat-label>
-        <mat-select [formControl]="accounts" multiple>
-          <mat-option *ngFor="let acc of accountList" [value]="acc"> {{ acc.name }}</mat-option>
-        </mat-select>
-    </mat-form-field>
-</form>

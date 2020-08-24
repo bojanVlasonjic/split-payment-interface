@@ -1,5 +1,9 @@
 import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
+import { PaymentSplit } from 'src/app/data/payment-split';
+import { AccountService } from 'src/app/services/account.service';
 import { Account } from 'src/app/data/account';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-manage-account',
@@ -8,27 +12,38 @@ import { Account } from 'src/app/data/account';
 })
 export class ManageAccountComponent implements OnInit {
 
-  account: Account;
-  splitType: string;
-  investmentPercentage: number;
+  paymentSplit: PaymentSplit = new PaymentSplit();
+  splitType: string = '';
 
-  accNums: Array<number> = [123, 456, 789];
+  investmentPercentage: number = 0;
+  userAccounts: Array<Account> = [];
+  filteredAccounts: Observable<Account[]> = new Observable<Account[]>();
 
-  @Output() accountEvent = new EventEmitter<Account>();
+  @Output() paySplitEvent = new EventEmitter<PaymentSplit>();
   @Input() articlePrice: number;
 
-
-
-  constructor() { }
+  constructor(
+    private accountService: AccountService
+    ) { }
 
   ngOnInit() {
-    this.account = new Account();
-    this.splitType = '';
+    this.getUserAccounts();
+  }
+
+  getUserAccounts(): void {
+    this.accountService.getUserAccounts(-1).subscribe(
+      data => {
+        this.userAccounts = data;
+      },
+      err => {
+        console.log(err.error);
+      }
+    );
   }
 
   createAccount(): void {
     // TODO: validate call service method
-    this.accountEvent.emit(this.account);
+    this.paySplitEvent.emit(this.paymentSplit);
   }
 
   fixedSplitChange($event: any) {
@@ -40,15 +55,29 @@ export class ManageAccountComponent implements OnInit {
   }
 
   onFixedValueChange($event: any) {
-    this.account.investment = $event.value;
+    this.paymentSplit.amount = $event.value;
   }
 
   onPercentualValueChange($event: any) {
-    this.account.investment = Math.round(($event.value/100) * this.articlePrice);
+    this.paymentSplit.amount = Math.round(($event.value/100) * this.articlePrice);
+    this.investmentPercentage = $event.value;
   }
 
   onPercentualInputChange($event: any) {
-    this.account.investment = Math.round(($event.target.value/100) * this.articlePrice);
+    this.paymentSplit.amount = Math.round(($event.target.value/100) * this.articlePrice);
+  }
+
+
+  filterAccounts(): void {
+    this.filteredAccounts = of(this.userAccounts).pipe(map(accounts => this.filter(accounts)));
+  }
+
+  filter(accounts: any): Array<any> {
+    return accounts.filter(acc => acc.number.includes(this.paymentSplit.account.number));
+  }
+
+  accountSelected(event: any) {
+    this.paymentSplit.account = event.option.value;
   }
 
 

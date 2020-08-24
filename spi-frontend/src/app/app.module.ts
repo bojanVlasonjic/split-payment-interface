@@ -12,7 +12,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { SelectAccountComponent } from './components/select-account/select-account.component';
+import { HttpClientModule } from '@angular/common/http';
+import { MatInputModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -20,19 +21,20 @@ import { SelectAccountComponent } from './components/select-account/select-accou
     ManageArticleComponent,
     ViewArticlesComponent,
     PaymentFlowComponent,
-    ManageAccountComponent,
-    SelectAccountComponent
+    ManageAccountComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     ChartsModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MatSliderModule,
     MatSelectModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]
