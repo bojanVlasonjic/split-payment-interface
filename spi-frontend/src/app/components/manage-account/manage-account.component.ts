@@ -5,7 +5,7 @@ import { Account } from 'src/app/data/account';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { Article } from 'src/app/data/article';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-manage-account',
@@ -15,7 +15,7 @@ import { FormControl } from '@angular/forms';
 export class ManageAccountComponent implements OnInit {
 
   paymentSplit: PaymentSplit = new PaymentSplit();
-  accountNumControl: FormControl = new FormControl();
+  accountNumControl: FormControl = new FormControl('', [Validators.required]);
   splitType: string = '';
 
   investmentPercentage: number = 0;
@@ -54,8 +54,11 @@ export class ManageAccountComponent implements OnInit {
   }
 
   createAccount(): void {
+
+    if(this.paymentSplit.amount != 0) {
+      this.paySplitEvent.emit(this.paymentSplit);
+    }
     // TODO: validate call service method
-    this.paySplitEvent.emit(this.paymentSplit);
   }
 
   fixedSplitChange($event: any) {

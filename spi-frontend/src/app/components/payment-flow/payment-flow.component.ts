@@ -17,13 +17,13 @@ export class PaymentFlowComponent implements OnInit {
   chartOptions: any = { maintainAspectRatio: false, responsive: true };
 
   article: Article;
-  paymentSplits: Array<PaymentSplit>;
+  addedAccountsNumbers: Array<string>;
 
   constructor() {
   }
 
   ngOnInit() {
-    this.paymentSplits = [];
+    this.addedAccountsNumbers = [];
     this.article = new Article();
     this.article.initDummyData();
 
@@ -35,15 +35,33 @@ export class PaymentFlowComponent implements OnInit {
 
 
   addNewSplit($paySplit: PaymentSplit): void {
-    this.pieChartData[0] -= $paySplit.amount;
-    this.paymentSplits.push($paySplit);
-    this.pieChartLabels.push($paySplit.account.name);
-    this.pieChartData.push($paySplit.amount);
-    this.labelColors[0].backgroundColor.push(this.generateRandomColor());
-    setTimeout(() => {
-      window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
-    }, 100)
+
+    if(this.pieChartData[0] - $paySplit.amount < 0) {
+      window.alert('Insufficient funds');
+      return;
+    }
+
+    if(!this.isSplitAdded($paySplit.account.number)) {
+      this.pieChartData[0] -= $paySplit.amount;
+      this.addedAccountsNumbers.push($paySplit.account.number);
+      this.pieChartLabels.push($paySplit.account.name);
+      this.pieChartData.push($paySplit.amount);
+      this.labelColors[0].backgroundColor.push(this.generateRandomColor());
+      setTimeout(() => {
+        window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
+      }, 100)
+    }
     
+  }
+
+  isSplitAdded(accountNum: string): boolean {
+    var isAdded = false;
+    this.addedAccountsNumbers.forEach( num => {
+      if (num === accountNum) {
+        isAdded = true;
+      }
+    });
+    return isAdded;
   }
 
   generateRandomColor(): string {

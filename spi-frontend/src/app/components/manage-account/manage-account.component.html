@@ -16,14 +16,12 @@
               </mat-option>
             </mat-autocomplete>
         </mat-form-field>
-        <br/>
-        <!-- 
-        <small [hidden]="(!accNum.errors?.required) || accNum.pristine" class="error-message">
+        <small *ngIf="accountNumControl.errors?.required && accountNumControl.touched" class="error-message">
             Account number is required
         </small>
-        <small [hidden]="(!accNum.errors?.pattern)" class="error-message">
+        <small *ngIf="accountNumControl.errors?.pattern && accountNumControl.touched" class="error-message">
             Invalid pattern, example pattern: 123-12345-12
-        </small>  -->
+        </small> 
     </div>
     <div class="form-group">
         <mat-form-field class="full-width">
@@ -71,12 +69,12 @@
 
     <div class="form-row" [ngClass]="{'disabled-slider': splitType != 'fixed'}">
         <div class="form-group col-9">
-            <mat-slider min="1" [max]="articlePrice" step="1" value="1"
+            <mat-slider min="1" [max]="article.price" step="1" value="1"
                 thumbLabel (input)="onFixedValueChange($event)" name="fixedInvestmentSlider"
                 [(ngModel)]="paymentSplit.amount">
             </mat-slider>
         </div>
-        <div class=" form-group col-3">
+        <div class="form-group col-3">
             <input type="number" class="form-control" name="accInvestmentInput" 
                 [(ngModel)]="paymentSplit.amount">
         </div>
@@ -94,6 +92,13 @@
                 [(ngModel)]="investmentPercentage" (input)="onPercentualInputChange($event)">
         </div>
     </div>
+    <div class="form-row">
+        <div class="col-12">
+            <small class="big-error-message" *ngIf="paymentSplit.amount == 0 && accountForm.submitted">
+                Amount to transfer must be specified
+            </small>
+        </div>
+    </div>  
 
     <label class="highlighted-text">Amount to transfer: &nbsp; {{ paymentSplit.amount }} rsd </label>
 
