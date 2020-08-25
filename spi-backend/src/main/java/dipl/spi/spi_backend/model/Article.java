@@ -26,4 +26,6 @@ public class Article {
     @OneToMany(mappedBy="article", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PaymentSplit> paymentSplits;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private AppUser user;
 }

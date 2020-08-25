@@ -6,3 +6,6 @@ insert into account(id, number, name, recipient_name, recipient_address, creator
 insert into account(id, number, name, recipient_name, recipient_address, creator_id) values (-3, "333-33-33", "Research", "Research", "Blabla 3", -1);
 
 insert into account(id, number, name, recipient_name, recipient_address, creator_id) values (-4, "444-44-44", "BCRF", "Breast cancer research", "Address 1", -2);
+
+
+insert into article(id, name, price, user_id) values (-1, "cappucino", 150, -1);

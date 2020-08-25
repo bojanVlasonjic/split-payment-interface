@@ -59,11 +59,11 @@
     <br/>
 
     <div class="custom-control custom-radio custom-control-inline radio-holder">
-        <input type="radio" id="fixedSplit" name="splitType" class="custom-control-input" (change)="fixedSplitChange($event)">
+        <input type="radio" id="fixedSplit" name="splitType" class="custom-control-input" (change)="splitTypeChange('fixed')">
         <label class="custom-control-label" for="fixedSplit">Fixed amount (rsd)</label>
       </div>
       <div class="custom-control custom-radio custom-control-inline">
-        <input type="radio" id="percentageSplit" name="splitType" class="custom-control-input" (change)="percentualSplitChange($event)">
+        <input type="radio" id="percentageSplit" name="splitType" class="custom-control-input" (change)="splitTypeChange('percentual')">
         <label class="custom-control-label" for="percentageSplit">Percentual amount (%)</label>
     </div>
 
@@ -103,7 +103,7 @@
     <label class="highlighted-text">Amount to transfer: &nbsp; {{ paymentSplit.amount }} rsd </label>
 
     <br/>
-    <button type="submit" class="btn btn-dark" [disabled]="!accountForm.form.valid">
+    <button type="submit" class="btn btn-dark" [disabled]="!accountForm.form.valid || accountNumControl.errors">
         Add account
     </button>
 </form>

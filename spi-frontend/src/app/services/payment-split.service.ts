@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { PaymentSplit } from '../data/payment-split';
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ArticleService {
+export class PaymentSplitService {
 
   constructor(private http: HttpClient) { }
 
-  getArticleById(articleId: number): Observable<any> {
-    return this.http.get(`api/article/${articleId}`);
+  createPaymentSplit(paySplit: PaymentSplit): Observable<any> {
+    return this.http.post('api/payment-split', paySplit);
   }
 }

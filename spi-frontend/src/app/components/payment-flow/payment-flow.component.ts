@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Article } from 'src/app/data/article';
 import { PaymentSplit } from 'src/app/data/payment-split';
+import { MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ArticleService } from 'src/app/services/article.service';
+import { PaymentSplitService } from 'src/app/services/payment-split.service';
 
 @Component({
   selector: 'app-payment-flow',
@@ -19,39 +23,85 @@ export class PaymentFlowComponent implements OnInit {
   article: Article;
   addedAccountsNumbers: Array<string>;
 
-  constructor() {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private snackBar: MatSnackBar,
+    private articleService: ArticleService,
+    private paymentSplitService: PaymentSplitService
+    ) {
   }
 
   ngOnInit() {
     this.addedAccountsNumbers = [];
     this.article = new Article();
-    this.article.initDummyData();
+    
+    this.route.params.subscribe(
+      params => {
+        this.getArticle(params['id']);
+      }
+    );
+  }
 
+  getArticle(articleId: number) {
+    this.articleService.getArticleById(articleId).subscribe(
+      data => {
+        this.article = data;
+        this.insertRemainderIntoChart();
+        this.article.paymentSplits.forEach(split => {
+          this.insertSplit(split);
+        });
+      },
+      err => {
+        this.snackBar.open(err.error.message);
+        this.router.navigate(['/my-articles']);
+      }
+    );
+  }
+
+  insertRemainderIntoChart(): void {
     this.pieChartLabels.push('Remaining amount');
     this.pieChartData.push(this.article.price);
     this.labelColors[0].backgroundColor.push('rgba(169, 169, 169, 1');
-    // todo: fetch article
   }
-
 
   addNewSplit($paySplit: PaymentSplit): void {
 
     if(this.pieChartData[0] - $paySplit.amount < 0) {
-      window.alert('Insufficient funds');
+      this.snackBar.open('Insufficient funds');
       return;
     }
 
     if(!this.isSplitAdded($paySplit.account.number)) {
-      this.pieChartData[0] -= $paySplit.amount;
-      this.addedAccountsNumbers.push($paySplit.account.number);
-      this.pieChartLabels.push($paySplit.account.name);
-      this.pieChartData.push($paySplit.amount);
-      this.labelColors[0].backgroundColor.push(this.generateRandomColor());
+      this.createPaymentSplit($paySplit);
+      this.insertSplit($paySplit);
       setTimeout(() => {
         window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
       }, 100)
+    } else {
+      this.snackBar.open(`Account with number ${$paySplit.account.number} has already been added`);
     }
     
+  }
+
+  createPaymentSplit(paySplit: PaymentSplit) {
+    paySplit.articleId = this.article.id;
+    this.paymentSplitService.createPaymentSplit(paySplit).subscribe(
+      data => {
+        paySplit.id = data.id;
+      },
+      err => {
+        this.snackBar.open(err.error.message);
+      }
+    );
+  }
+
+  insertSplit(split: PaymentSplit): void {
+      this.pieChartData[0] -= split.amount;
+      this.addedAccountsNumbers.push(split.account.number);
+      this.pieChartLabels.push(split.account.name);
+      this.pieChartData.push(split.amount);
+      this.labelColors[0].backgroundColor.push(this.generateRandomColor());
   }
 
   isSplitAdded(accountNum: string): boolean {

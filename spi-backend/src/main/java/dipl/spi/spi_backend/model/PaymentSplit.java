@@ -1,5 +1,6 @@
 package dipl.spi.spi_backend.model;
 
+import dipl.spi.spi_backend.dto.PaymentSplitDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,10 +20,18 @@ public class PaymentSplit {
     @Column(nullable = false)
     private double amount;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Account account;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Article article;
+
+    public PaymentSplit(PaymentSplitDto paymentSplitDto, AppUser user, Article article) {
+        this.id = paymentSplitDto.getId();
+        this.amount = paymentSplitDto.getAmount();
+        this.account = new Account(paymentSplitDto.getAccount(), user);
+        this.article = article;
+
+    }
 
 }

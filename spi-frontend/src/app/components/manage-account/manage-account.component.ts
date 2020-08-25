@@ -30,7 +30,6 @@ export class ManageAccountComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    this.paymentSplit.articleId = this.article.id;
     this.getUserAccounts();
     this.initAutocompleteFilter();
   }
@@ -54,19 +53,13 @@ export class ManageAccountComponent implements OnInit {
   }
 
   createAccount(): void {
-
     if(this.paymentSplit.amount != 0) {
       this.paySplitEvent.emit(this.paymentSplit);
     }
-    // TODO: validate call service method
   }
 
-  fixedSplitChange($event: any) {
-    this.splitType = 'fixed';
-  }
-
-  percentualSplitChange($event: any) {
-    this.splitType = 'percentual';
+  splitTypeChange(value: string) {
+    this.splitType = value;
   }
 
   onFixedValueChange($event: any) {

@@ -29,7 +29,7 @@ public class Account {
     @Column(nullable = false)
     private String recipientAddress;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     private AppUser creator;
 
 
@@ -40,7 +40,10 @@ public class Account {
         this.recipientName = accountDto.getRecipientName();
         this.recipientAddress = accountDto.getRecipientAddress();
 
-        this.creator = appUser;
+        if(appUser != null) {
+            this.creator = appUser;
+        }
+
     }
 
 }

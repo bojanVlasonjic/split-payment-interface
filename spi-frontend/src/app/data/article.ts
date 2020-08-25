@@ -1,16 +1,16 @@
+import { PaymentSplit } from './payment-split';
 
 export class Article {
     
     id: number;
+    userId: number;
     name: string;
     price: number;
 
+    paymentSplits: Array<PaymentSplit>;
+
     constructor() {  
+        this.paymentSplits = [];
     }
 
-    // TODO: delete
-    initDummyData(): void {
-        this.name = 'cappucino';
-        this.price = 150;
-    }
 }

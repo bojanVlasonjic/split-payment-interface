@@ -8,11 +8,11 @@ import { ViewArticlesComponent } from './components/view-articles/view-articles.
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'payment-flow',
+    redirectTo: 'payment-flow/-1',
     pathMatch: 'full'
   },
   {
-    path: 'payment-flow',
+    path: 'payment-flow/:id',
     component: PaymentFlowComponent
   },
   {

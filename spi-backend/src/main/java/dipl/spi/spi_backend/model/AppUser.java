@@ -26,4 +26,7 @@ public class AppUser {
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Account> addedAccounts;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Article> addedArticles;
+
 }

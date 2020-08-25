@@ -14,6 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { HttpClientModule } from '@angular/common/http';
 import { MatInputModule } from '@angular/material';
+import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -34,9 +35,15 @@ import { MatInputModule } from '@angular/material';
     MatSliderModule,
     MatSelectModule,
     MatAutocompleteModule,
-    MatInputModule
+    MatInputModule,
+    MatSnackBarModule
   ],
-  providers: [],
+  providers: [
+    {
+    provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+    useValue: {duration: 2500}
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
