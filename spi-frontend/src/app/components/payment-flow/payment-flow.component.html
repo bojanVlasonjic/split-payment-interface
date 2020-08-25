@@ -16,7 +16,7 @@
     <div class="col-md-6">
         <h4 class="option-header">New account</h4>
         <p class="hint-text">Fill out the information below the create a new account: </p>
-        <app-manage-account [articlePrice]="article.price" (paySplitEvent)="addNewSplit($event)"></app-manage-account>
+        <app-manage-account [article]="article" (paySplitEvent)="addNewSplit($event)"></app-manage-account>
     </div>
 
 

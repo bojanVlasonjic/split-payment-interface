@@ -2,8 +2,10 @@ import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { PaymentSplit } from 'src/app/data/payment-split';
 import { AccountService } from 'src/app/services/account.service';
 import { Account } from 'src/app/data/account';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import { Article } from 'src/app/data/article';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-manage-account',
@@ -13,6 +15,7 @@ import { map } from 'rxjs/operators';
 export class ManageAccountComponent implements OnInit {
 
   paymentSplit: PaymentSplit = new PaymentSplit();
+  accountNumControl: FormControl = new FormControl();
   splitType: string = '';
 
   investmentPercentage: number = 0;
@@ -20,14 +23,23 @@ export class ManageAccountComponent implements OnInit {
   filteredAccounts: Observable<Account[]> = new Observable<Account[]>();
 
   @Output() paySplitEvent = new EventEmitter<PaymentSplit>();
-  @Input() articlePrice: number;
+  @Input() article: Article;
 
   constructor(
     private accountService: AccountService
     ) { }
 
   ngOnInit() {
+    this.paymentSplit.articleId = this.article.id;
     this.getUserAccounts();
+    this.initAutocompleteFilter();
+  }
+
+  initAutocompleteFilter(): void {
+    this.filteredAccounts = this.accountNumControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value))
+    );
   }
 
   getUserAccounts(): void {
@@ -59,25 +71,34 @@ export class ManageAccountComponent implements OnInit {
   }
 
   onPercentualValueChange($event: any) {
-    this.paymentSplit.amount = Math.round(($event.value/100) * this.articlePrice);
+    this.paymentSplit.amount = Math.round(($event.value/100) * this.article.price);
     this.investmentPercentage = $event.value;
   }
 
   onPercentualInputChange($event: any) {
-    this.paymentSplit.amount = Math.round(($event.target.value/100) * this.articlePrice);
+    this.paymentSplit.amount = Math.round(($event.target.value/100) * this.article.price);
   }
 
 
-  filterAccounts(): void {
-    this.filteredAccounts = of(this.userAccounts).pipe(map(accounts => this.filter(accounts)));
-  }
-
-  filter(accounts: any): Array<any> {
-    return accounts.filter(acc => acc.number.includes(this.paymentSplit.account.number));
+  private _filter(value: string): Account[] {
+    return this.userAccounts.filter(acc => acc.number.includes(value));
   }
 
   accountSelected(event: any) {
-    this.paymentSplit.account = event.option.value;
+    const accIndex = this.getAccountIndexByNumber(event.option.value);
+    
+    if(accIndex != -1) {
+      this.paymentSplit.account = this.userAccounts[accIndex];
+    }
+  }
+
+  getAccountIndexByNumber(accNum: string) {
+    for (let i = 0; i < this.userAccounts.length; i++) {
+      if (this.userAccounts[i].number === accNum) {
+        return i;
+      }
+    }
+    return -1;
   }
 
 
