@@ -2,6 +2,7 @@ package dipl.spi.spi_backend.service;
 
 import dipl.spi.spi_backend.dto.PaymentSplitDto;
 import dipl.spi.spi_backend.exception.ApiBadRequestException;
+import dipl.spi.spi_backend.model.Account;
 import dipl.spi.spi_backend.model.AppUser;
 import dipl.spi.spi_backend.model.Article;
 import dipl.spi.spi_backend.model.PaymentSplit;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +25,9 @@ public class PaymentSplitService {
 
     @Autowired
     private AppUserService appUserService;
+
+    @Autowired
+    private AccountService accountService;
 
 
     public List<PaymentSplitDto> getPaymentSplitsForArticle(Long articleId) {
@@ -48,9 +53,19 @@ public class PaymentSplitService {
 
         Article article = articleService.findById(paymentSplitDto.getArticleId());
         AppUser user = appUserService.findUserById(article.getUser().getId());
-        PaymentSplit paymentSplit = new PaymentSplit(paymentSplitDto, user, article);
+        Account account = null;
 
-        return new PaymentSplitDto(paymentSplitRepository.save(paymentSplit));
+        // check if the account has already been saved or the user selected an existing one
+        Optional<Account> accountOpt = accountService.findAccountById(paymentSplitDto.getAccount().getId());
+        account = accountOpt.orElseGet(() -> new Account(paymentSplitDto.getAccount(), user));
 
+        PaymentSplit paymentSplit = new PaymentSplit(paymentSplitDto, user, article, account);
+
+        try {
+            return new PaymentSplitDto(paymentSplitRepository.save(paymentSplit));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        throw new ApiBadRequestException("Something went wrong. Please refresh the page and try again");
     }
 }

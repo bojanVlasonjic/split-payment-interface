@@ -13,4 +13,8 @@ export class AccountService {
   getUserAccounts(userId: number): Observable<any> {
     return this.http.get(`api/account/${userId}`);
   }
+
+  createAccount(account: Account): Observable<any> {
+    return this.http.post('api/account', account);
+  }
 }

@@ -7,6 +7,8 @@ import { map, startWith } from 'rxjs/operators';
 import { Article } from 'src/app/data/article';
 import { FormControl, Validators } from '@angular/forms';
 
+import { AccountObservableService } from 'src/app/services/account-observable.service';
+
 @Component({
   selector: 'app-manage-account',
   templateUrl: './manage-account.component.html',
@@ -26,12 +28,21 @@ export class ManageAccountComponent implements OnInit {
   @Input() article: Article;
 
   constructor(
-    private accountService: AccountService
+    private accountService: AccountService,
+    private accObservService: AccountObservableService
     ) { }
 
   ngOnInit() {
     this.getUserAccounts();
     this.initAutocompleteFilter();
+    
+    this.accObservService.getAccount().subscribe(
+      data => {
+        if(this.getAccountIndexByNumber(data.number) == -1) {
+          this.userAccounts.push(data);
+        }
+      }
+    );
   }
 
   initAutocompleteFilter(): void {
@@ -52,8 +63,13 @@ export class ManageAccountComponent implements OnInit {
     );
   }
 
-  createAccount(): void {
-    if(this.paymentSplit.amount != 0) {
+  createPaymentSplit(): void {
+    if(this.paymentSplit.amount != null && this.paymentSplit.amount > 0) {
+      this.paymentSplit.account.number = this.accountNumControl.value;
+      const accIndex = this.getAccountIndexByNumber(this.accountNumControl.value);
+      if(accIndex == -1) {
+        this.paymentSplit.account.id = null; // the account hasn't been created yet
+      }
       this.paySplitEvent.emit(this.paymentSplit);
     }
   }
@@ -84,13 +100,13 @@ export class ManageAccountComponent implements OnInit {
     const accIndex = this.getAccountIndexByNumber(event.option.value);
     
     if(accIndex != -1) {
-      this.paymentSplit.account = this.userAccounts[accIndex];
+      this.paymentSplit.account.setValues(this.userAccounts[accIndex]);
     }
   }
 
-  getAccountIndexByNumber(accNum: string) {
+  getAccountIndexByNumber(accNum: string): number {
     for (let i = 0; i < this.userAccounts.length; i++) {
-      if (this.userAccounts[i].number === accNum) {
+      if (this.userAccounts[i].number == accNum) {
         return i;
       }
     }

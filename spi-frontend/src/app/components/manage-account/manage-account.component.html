@@ -1,4 +1,4 @@
-<form class="new-account-form" #accountForm="ngForm" (ngSubmit)="createAccount()">
+<form class="new-account-form" #accountForm="ngForm" (ngSubmit)="createPaymentSplit()">
     <div class="form-group">
         <mat-form-field class="full-width">
             <input type="text"
@@ -94,7 +94,7 @@
     </div>
     <div class="form-row">
         <div class="col-12">
-            <small class="big-error-message" *ngIf="paymentSplit.amount == 0 && accountForm.submitted">
+            <small class="big-error-message" *ngIf="paymentSplit.amount <= 0 && accountForm.submitted">
                 Amount to transfer must be specified
             </small>
         </div>

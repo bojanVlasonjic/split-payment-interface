@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from 'src/app/services/article.service';
 import { PaymentSplitService } from 'src/app/services/payment-split.service';
+import { AccountObservableService } from 'src/app/services/account-observable.service';
 
 @Component({
   selector: 'app-payment-flow',
@@ -21,19 +22,20 @@ export class PaymentFlowComponent implements OnInit {
   chartOptions: any = { maintainAspectRatio: false, responsive: true };
 
   article: Article;
-  addedAccountsNumbers: Array<string>;
+  paymentSplits: Array<PaymentSplit>;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
     private articleService: ArticleService,
-    private paymentSplitService: PaymentSplitService
+    private paymentSplitService: PaymentSplitService,
+    private accObservService: AccountObservableService
     ) {
   }
 
   ngOnInit() {
-    this.addedAccountsNumbers = [];
+    this.paymentSplits = [];
     this.article = new Article();
     
     this.route.params.subscribe(
@@ -74,7 +76,6 @@ export class PaymentFlowComponent implements OnInit {
 
     if(!this.isSplitAdded($paySplit.account.number)) {
       this.createPaymentSplit($paySplit);
-      this.insertSplit($paySplit);
       setTimeout(() => {
         window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
       }, 100)
@@ -88,7 +89,9 @@ export class PaymentFlowComponent implements OnInit {
     paySplit.articleId = this.article.id;
     this.paymentSplitService.createPaymentSplit(paySplit).subscribe(
       data => {
-        paySplit.id = data.id;
+        this.paymentSplits.push(data);
+        this.insertSplit(data);
+        this.accObservService.sendAccount(data.account);
       },
       err => {
         this.snackBar.open(err.error.message);
@@ -98,7 +101,7 @@ export class PaymentFlowComponent implements OnInit {
 
   insertSplit(split: PaymentSplit): void {
       this.pieChartData[0] -= split.amount;
-      this.addedAccountsNumbers.push(split.account.number);
+      this.paymentSplits.push(split);
       this.pieChartLabels.push(split.account.name);
       this.pieChartData.push(split.amount);
       this.labelColors[0].backgroundColor.push(this.generateRandomColor());
@@ -106,8 +109,8 @@ export class PaymentFlowComponent implements OnInit {
 
   isSplitAdded(accountNum: string): boolean {
     var isAdded = false;
-    this.addedAccountsNumbers.forEach( num => {
-      if (num === accountNum) {
+    this.paymentSplits.forEach( split => {
+      if (split.account.number === accountNum) {
         isAdded = true;
       }
     });

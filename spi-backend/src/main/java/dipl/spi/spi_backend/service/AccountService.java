@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +42,17 @@ public class AccountService {
         Account account = new Account(accountDto, user);
 
         return new AccountDto(accountRepository.save(account));
+    }
+
+
+    public Optional<Account> findAccountById(Long id) {
+
+        if(id != null) {
+            return accountRepository.findById(id);
+        }
+
+        return Optional.empty();
+
     }
 
 }

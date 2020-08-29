@@ -20,17 +20,20 @@ public class PaymentSplit {
     @Column(nullable = false)
     private double amount;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Article article;
 
-    public PaymentSplit(PaymentSplitDto paymentSplitDto, AppUser user, Article article) {
+    public PaymentSplit(PaymentSplitDto paymentSplitDto, AppUser user, Article article, Account account) {
         this.id = paymentSplitDto.getId();
         this.amount = paymentSplitDto.getAmount();
-        this.account = new Account(paymentSplitDto.getAccount(), user);
         this.article = article;
+
+        if(account != null) {
+            this.account = account;
+        }
 
     }
 
