@@ -29,4 +29,12 @@ public class PaymentSplitController {
         );
     }
 
+    @PutMapping
+    public ResponseEntity<PaymentSplitDto> updatePaymentSplit(@RequestBody PaymentSplitDto paymentSplitDto) {
+        return new ResponseEntity<>(
+                paymentSplitService.updatePaymentSplit(paymentSplitDto),
+                HttpStatus.OK
+        );
+    }
+
 }

@@ -13,7 +13,7 @@ export class Account {
 
     }
 
-    setValues(acc: Account) {
+    updateValues(acc: Account) {
         this.id = acc.id;
         this.userId = acc.userId;
         this.number = acc.number;

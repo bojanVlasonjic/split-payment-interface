@@ -15,7 +15,9 @@
 
 .disabled-slider {
     opacity: 0;
+    pointer-events: none;
 }
+
 
 .highlighted-text {
     font-size: 17px;
@@ -34,6 +36,10 @@
 
 .full-width {
     width: 100%;
+}
+
+.split-type-radio {
+    margin: 1ex;
 }
 
 

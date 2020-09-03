@@ -1,4 +1,4 @@
-<form class="new-account-form" #accountForm="ngForm" (ngSubmit)="createPaymentSplit()">
+<form class="new-account-form" #accountForm="ngForm">
     <div class="form-group">
         <mat-form-field class="full-width">
             <input type="text"
@@ -58,14 +58,14 @@
     <label>How would you like to specify the amount of funds to transfer?</label>
     <br/>
 
-    <div class="custom-control custom-radio custom-control-inline radio-holder">
-        <input type="radio" id="fixedSplit" name="splitType" class="custom-control-input" (change)="splitTypeChange('fixed')">
-        <label class="custom-control-label" for="fixedSplit">Fixed amount (rsd)</label>
-      </div>
-      <div class="custom-control custom-radio custom-control-inline">
-        <input type="radio" id="percentageSplit" name="splitType" class="custom-control-input" (change)="splitTypeChange('percentual')">
-        <label class="custom-control-label" for="percentageSplit">Percentual amount (%)</label>
-    </div>
+    <mat-radio-group [(ngModel)]="splitType" name="splitType">
+    <mat-radio-button value="fixed" class="splitTypeRadio">
+      Fixed (rsd)
+    </mat-radio-button>
+    <mat-radio-button value="percentual" class="split-type-radio">
+        Percentual (%)
+    </mat-radio-button>
+  </mat-radio-group>
 
     <div class="form-row" [ngClass]="{'disabled-slider': splitType != 'fixed'}">
         <div class="form-group col-9">
@@ -103,8 +103,13 @@
     <label class="highlighted-text">Amount to transfer: &nbsp; {{ paymentSplit.amount }} rsd </label>
 
     <br/>
-    <button type="submit" class="btn btn-dark" [disabled]="!accountForm.form.valid || accountNumControl.errors">
+    <button type="submit" class="btn btn-dark" *ngIf="!isUpdating" (click)="createPaymentSplit()"
+        [disabled]="!accountForm.form.valid || accountNumControl.errors">
         Add account
+    </button>
+    <button type="submit" class="btn btn-dark" *ngIf="isUpdating" (click)="updatePaymentSplit()"
+        [disabled]="!accountForm.form.valid || accountNumControl.errors">
+        Update account
     </button>
 </form>
 

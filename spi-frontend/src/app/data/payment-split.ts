@@ -11,4 +11,12 @@ export class PaymentSplit {
         this.account = new Account();
         this.amount = 0;
     }
+
+    updateValues(paySplit: PaymentSplit) {
+        this.id = paySplit.id;
+        this.articleId = paySplit.articleId;
+        this.amount = paySplit.amount;
+
+        this.account.updateValues(paySplit.account);
+    }
 }

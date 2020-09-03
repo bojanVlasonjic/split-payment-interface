@@ -13,4 +13,8 @@ export class PaymentSplitService {
   createPaymentSplit(paySplit: PaymentSplit): Observable<any> {
     return this.http.post('api/payment-split', paySplit);
   }
+
+  updatePaymentSplit(paySplit: PaymentSplit): Observable<any> {
+    return this.http.put('api/payment-split', paySplit);
+  }
 }

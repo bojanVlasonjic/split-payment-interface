@@ -14,7 +14,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { HttpClientModule } from '@angular/common/http';
 import { MatInputModule } from '@angular/material';
+import {MatDialogModule} from '@angular/material/dialog';
 import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/material/snack-bar';
+import { ConfigureSplitDialogComponent } from './components/configure-split-dialog/configure-split-dialog.component';
+import {MatRadioModule} from '@angular/material/radio';
 
 @NgModule({
   declarations: [
@@ -22,7 +25,8 @@ import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/materia
     ManageArticleComponent,
     ViewArticlesComponent,
     PaymentFlowComponent,
-    ManageAccountComponent
+    ManageAccountComponent,
+    ConfigureSplitDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +40,9 @@ import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/materia
     MatSelectModule,
     MatAutocompleteModule,
     MatInputModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDialogModule,
+    MatRadioModule
   ],
   providers: [
     {
@@ -44,6 +50,7 @@ import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/materia
     useValue: {duration: 2500}
     }
   ],
+  entryComponents: [ConfigureSplitDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

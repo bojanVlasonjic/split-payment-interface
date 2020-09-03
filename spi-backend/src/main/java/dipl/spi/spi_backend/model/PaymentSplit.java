@@ -1,5 +1,6 @@
 package dipl.spi.spi_backend.model;
 
+import dipl.spi.spi_backend.dto.AccountDto;
 import dipl.spi.spi_backend.dto.PaymentSplitDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,11 @@ public class PaymentSplit {
             this.account = account;
         }
 
+    }
+
+    public void updateValues(PaymentSplitDto paymentSplitDto) {
+        this.amount = paymentSplitDto.getAmount();
+        this.account.updateValues(paymentSplitDto.getAccount());
     }
 
 }

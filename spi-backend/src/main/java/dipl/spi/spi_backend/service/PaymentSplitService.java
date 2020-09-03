@@ -2,6 +2,7 @@ package dipl.spi.spi_backend.service;
 
 import dipl.spi.spi_backend.dto.PaymentSplitDto;
 import dipl.spi.spi_backend.exception.ApiBadRequestException;
+import dipl.spi.spi_backend.exception.ApiNotFoundException;
 import dipl.spi.spi_backend.model.Account;
 import dipl.spi.spi_backend.model.AppUser;
 import dipl.spi.spi_backend.model.Article;
@@ -67,5 +68,26 @@ public class PaymentSplitService {
             ex.printStackTrace();
         }
         throw new ApiBadRequestException("Something went wrong. Please refresh the page and try again");
+    }
+
+    public PaymentSplitDto updatePaymentSplit(PaymentSplitDto paymentSplitDto) {
+
+        if (paymentSplitDto.getId() == null) {
+           throw new ApiBadRequestException("Failed to find payment split");
+        }
+
+        PaymentSplit paymentSplit = paymentSplitRepository
+                .findById(paymentSplitDto.getId())
+                .orElseThrow(() -> new ApiNotFoundException("Payment split with id "
+                        + paymentSplitDto.getId() + " wasn't found"));
+
+        paymentSplit.updateValues(paymentSplitDto);
+
+        try {
+            return new PaymentSplitDto(paymentSplitRepository.save(paymentSplit));
+        } catch (Exception ex) {
+            throw new ApiBadRequestException("Something went wrong. Please refresh the page and try again");
+        }
+
     }
 }
