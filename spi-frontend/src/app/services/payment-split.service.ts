@@ -17,4 +17,8 @@ export class PaymentSplitService {
   updatePaymentSplit(paySplit: PaymentSplit): Observable<any> {
     return this.http.put('api/payment-split', paySplit);
   }
+
+  removePaymentSplit(splitId: number): Observable<any> {
+    return this.http.delete(`api/payment-split/${splitId}`);
+  }
 }

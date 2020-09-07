@@ -1,0 +1,43 @@
+.centered-content {
+    padding: 2ex;
+    text-align: center;
+}
+
+.spinner {
+    padding: 2ex;
+    margin-top: 2ex;
+
+}
+
+.identifier {
+    border-bottom: 1px solid black;
+    padding: 1ex;
+}
+
+.value {
+    padding: 1ex;
+}
+
+.card {
+    max-width: 18rem;
+}
+
+.remove-icon {
+    float: right;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.remove-icon:hover {
+    opacity: 0.5;
+    cursor: pointer;
+    font-weight: 1000;
+}
+
+.left-btn {
+    float: left;
+}
+
+.right-btn {
+    float: right;
+}

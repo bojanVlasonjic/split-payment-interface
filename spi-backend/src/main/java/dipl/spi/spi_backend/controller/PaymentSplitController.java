@@ -37,4 +37,11 @@ public class PaymentSplitController {
         );
     }
 
+    @DeleteMapping("/{splitId}")
+    public ResponseEntity<Long> deletePaymentSplit(@PathVariable Long splitId) {
+
+        return ResponseEntity.ok(paymentSplitService.deletePaymentSplit(splitId));
+
+    }
+
 }

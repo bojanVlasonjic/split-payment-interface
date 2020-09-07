@@ -1,10 +1,12 @@
 package dipl.spi.spi_backend.model;
 
+import dipl.spi.spi_backend.dto.ArticleDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,4 +30,14 @@ public class Article {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private AppUser user;
+
+
+    public Article(ArticleDto articleDto, AppUser appUser) {
+        this.id = articleDto.getId();
+        this.name = articleDto.getName();
+        this.price = articleDto.getPrice();
+
+        this.paymentSplits = new ArrayList<>();
+        this.user = appUser;
+    }
 }

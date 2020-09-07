@@ -21,10 +21,10 @@ public class PaymentSplit {
     @Column(nullable = false)
     private double amount;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Account account;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Article article;
 
     public PaymentSplit(PaymentSplitDto paymentSplitDto, AppUser user, Article article, Account account) {

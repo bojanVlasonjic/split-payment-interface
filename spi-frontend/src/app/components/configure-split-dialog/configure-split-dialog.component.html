@@ -5,6 +5,9 @@
 </mat-dialog-content>
 <mat-dialog-actions align="center">
     <button mat-button mat-dialog-close class="btn btn-outline-dark">Cancel</button>
-    <button mat-button [mat-dialog-close]="true" class="btn btn-danger">Remove</button>
+    <button mat-button [mat-dialog-close]="true" class="btn btn-danger" 
+        (click)="removePaymentSplit(data.dialogData.paymentSplit)">
+        Remove
+    </button>
 </mat-dialog-actions>
   

@@ -90,4 +90,26 @@ public class PaymentSplitService {
         }
 
     }
+
+
+    public Long deletePaymentSplit(Long splitId) {
+
+        Optional<PaymentSplit> paySplitOpt = paymentSplitRepository.findById(splitId);
+
+        if(paySplitOpt.isEmpty()) {
+            throw new ApiNotFoundException("Failed to find payment split with id " + splitId);
+        }
+
+        try {
+            paymentSplitRepository.delete(paySplitOpt.get());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ApiBadRequestException("Something went wrong while deleting the payment split. " +
+                    "Please refresh the page and try again.");
+        }
+
+        return paySplitOpt.get().getId();
+    }
+
+
 }

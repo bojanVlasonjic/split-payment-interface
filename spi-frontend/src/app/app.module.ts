@@ -18,6 +18,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/material/snack-bar';
 import { ConfigureSplitDialogComponent } from './components/configure-split-dialog/configure-split-dialog.component';
 import {MatRadioModule} from '@angular/material/radio';
+import { HomeComponent } from './components/home/home.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import {MatRadioModule} from '@angular/material/radio';
     ViewArticlesComponent,
     PaymentFlowComponent,
     ManageAccountComponent,
-    ConfigureSplitDialogComponent
+    ConfigureSplitDialogComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

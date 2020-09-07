@@ -13,6 +13,7 @@ import { SplitDialogData } from 'src/app/data/split-dialog-data';
 export class ConfigureSplitDialogComponent implements OnInit {
 
   @Output() updateClicked = new EventEmitter<SplitDialogData>();
+  @Output() removeClicked = new EventEmitter<SplitDialogData>();
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
@@ -22,12 +23,19 @@ export class ConfigureSplitDialogComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    console.log(this.data);
+
   }
 
-  updatePaymentSplit(split: PaymentSplit) {
+  updatePaymentSplit(split: PaymentSplit): void {
     this.data.paymentSplit = split;
     this.updateClicked.emit(this.data.dialogData);
+  }
+
+  removePaymentSplit(paySplit: PaymentSplit): void {
+    if (window.confirm(`Are you sure you want to remove ${paySplit.amount} rsd transfered to ${paySplit.account.name}?`)) {
+      this.removeClicked.emit(this.data.dialogData);
+    }
+    
   }
 
 }

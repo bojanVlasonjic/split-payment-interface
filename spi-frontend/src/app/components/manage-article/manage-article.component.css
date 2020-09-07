@@ -1,0 +1,14 @@
+
+.full-width {
+    width: 100%;
+}
+
+.error-message {
+    font-size: 14px;
+    color: red;
+}
+
+.heading {
+    text-align: center;
+    padding: 2ex;
+}

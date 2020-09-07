@@ -61,7 +61,7 @@ export class PaymentFlowComponent implements OnInit {
       },
       err => {
         this.snackBar.open(err.error.message);
-        this.router.navigate(['/my-articles']);
+        this.router.navigate(['/home']);
       }
     );
   }
@@ -95,7 +95,6 @@ export class PaymentFlowComponent implements OnInit {
     paySplit.articleId = this.article.id;
     this.paymentSplitService.createPaymentSplit(paySplit).subscribe(
       data => {
-        this.paymentSplits.push(data);
         this.insertSplitInChart(data);
         this.accObservService.sendAccount(data.account);
       },
@@ -125,13 +124,34 @@ export class PaymentFlowComponent implements OnInit {
     );
   }
 
-  updateSplitInChart(split: PaymentSplit, index: number): void {
-    this.pieChartData[0] += this.paymentSplits[index].amount; // add old amount to the remainder price
+  removePaymentSplit(dialogData: SplitDialogData) {
+
+    this.paymentSplitService.removePaymentSplit(dialogData.paymentSplit.id).subscribe(
+      data => {
+        this.removeSplitFromChart(dialogData.paymentSplit, dialogData.paySplitIndex);
+      },
+      err => {
+        this.snackBar.open(err.error.message);
+      }
+    );
+
+  }
+
+  removeSplitFromChart(split: PaymentSplit, splitIndex: number) {
+    this.pieChartData[0] += split.amount; // add the amount to the remainder
+
+    this.paymentSplits.splice(splitIndex, 1);
+    this.pieChartLabels.splice(splitIndex + 1, 1); // adding +1 to skip the label indicating the remaining amount
+    this.pieChartData.splice(splitIndex + 1, 1);
+  }
+
+  updateSplitInChart(split: PaymentSplit, splitIndex: number): void {
+    this.pieChartData[0] += this.paymentSplits[splitIndex].amount; // add old amount to the remainder price
     this.pieChartData[0] -= split.amount; // decrease new amount from the remainder price
 
-    this.paymentSplits[index] = split;
-    this.pieChartLabels[index + 1] = split.account.name; // adding +1 to skip the label indicating the remaining amount
-    this.pieChartData[index + 1] = split.amount;
+    this.paymentSplits[splitIndex] = split;
+    this.pieChartLabels[splitIndex + 1] = split.account.name; // adding +1 to skip the label indicating the remaining amount
+    this.pieChartData[splitIndex + 1] = split.amount;
   }
 
   insertSplitInChart(split: PaymentSplit): void {
@@ -185,10 +205,17 @@ export class PaymentFlowComponent implements OnInit {
       }
     });
 
-    const dialogSubscr = this.dialogRef.componentInstance.updateClicked.subscribe(
+    const dialogEditSubscr = this.dialogRef.componentInstance.updateClicked.subscribe(
       result => {
         this.updatePaymentSplit(result);
-        dialogSubscr.unsubscribe();
+        dialogEditSubscr.unsubscribe();
+      }
+    );
+
+    const dialogRemoveSubscr = this.dialogRef.componentInstance.removeClicked.subscribe(
+      result => {
+        this.removePaymentSplit(result);
+        dialogRemoveSubscr.unsubscribe();
       }
     );
   }

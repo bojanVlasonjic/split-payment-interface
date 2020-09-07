@@ -9,3 +9,5 @@ insert into account(id, number, name, recipient_name, recipient_address, creator
 
 
 insert into article(id, name, price, user_id) values (-1, "cappucino", 150, -1);
+insert into article(id, name, price, user_id) values (-2, "vodavoda", 50, -1);
+insert into article(id, name, price, user_id) values (-3, "plazma", 120, -1);

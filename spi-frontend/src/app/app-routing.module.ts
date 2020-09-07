@@ -3,13 +3,18 @@ import { Routes, RouterModule } from '@angular/router';
 import { PaymentFlowComponent } from './components/payment-flow/payment-flow.component';
 import { ManageArticleComponent } from './components/manage-article/manage-article.component';
 import { ViewArticlesComponent } from './components/view-articles/view-articles.component';
+import { HomeComponent } from './components/home/home.component';
 
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'payment-flow/-1',
+    redirectTo: 'home',
     pathMatch: 'full'
+  },
+  {
+    path: 'home',
+    component: HomeComponent
   },
   {
     path: 'payment-flow/:id',
