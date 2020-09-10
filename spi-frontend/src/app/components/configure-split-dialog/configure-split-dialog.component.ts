@@ -32,7 +32,7 @@ export class ConfigureSplitDialogComponent implements OnInit {
   }
 
   removePaymentSplit(paySplit: PaymentSplit): void {
-    if (window.confirm(`Are you sure you want to remove ${paySplit.amount} rsd transfered to ${paySplit.account.name}?`)) {
+    if (window.confirm(`Are you sure you want to remove ${paySplit.amount} rsd transfered to ${paySplit.account.recipientName}?`)) {
       this.removeClicked.emit(this.data.dialogData);
     }
     

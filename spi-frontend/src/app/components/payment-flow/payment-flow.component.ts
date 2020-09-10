@@ -150,14 +150,14 @@ export class PaymentFlowComponent implements OnInit {
     this.pieChartData[0] -= split.amount; // decrease new amount from the remainder price
 
     this.paymentSplits[splitIndex] = split;
-    this.pieChartLabels[splitIndex + 1] = split.account.name; // adding +1 to skip the label indicating the remaining amount
+    this.pieChartLabels[splitIndex + 1] = split.account.recipientName; // adding +1 to skip the label indicating the remaining amount
     this.pieChartData[splitIndex + 1] = split.amount;
   }
 
   insertSplitInChart(split: PaymentSplit): void {
       this.pieChartData[0] -= split.amount;
       this.paymentSplits.push(split);
-      this.pieChartLabels.push(split.account.name);
+      this.pieChartLabels.push(split.account.recipientName);
       this.pieChartData.push(split.amount);
       this.labelColors[0].backgroundColor.push(this.generateRandomColor());
   }

@@ -9,11 +9,11 @@ import { FormControl, Validators } from '@angular/forms';
 import { AccountObservableService } from 'src/app/services/account-observable.service';
 
 @Component({
-  selector: 'app-manage-account',
-  templateUrl: './manage-account.component.html',
-  styleUrls: ['./manage-account.component.css']
+  selector: 'app-manage-split',
+  templateUrl: './manage-split.component.html',
+  styleUrls: ['./manage-split.component.css']
 })
-export class ManageAccountComponent implements OnInit, OnDestroy {
+export class ManageSplitComponent implements OnInit, OnDestroy {
 
   //paymentSplit: PaymentSplit = new PaymentSplit();
   accountNumControl: FormControl = new FormControl('', [Validators.required]);

@@ -14,7 +14,6 @@ public class AccountDto {
     private Long userId;
 
     private String number;
-    private String name;
     private String recipientName;
     private String recipientAddress;
 
@@ -24,7 +23,6 @@ public class AccountDto {
         this.userId = account.getCreator().getId();
 
         this.number = account.getNumber();
-        this.name = account.getName();
         this.recipientName = account.getRecipientName();
         this.recipientAddress = account.getRecipientAddress();
     }

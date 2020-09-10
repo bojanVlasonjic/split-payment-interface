@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>Edit payment split</h2>
 <mat-dialog-content class="mat-typography">
-    <app-manage-account [article]="data.dialogData.article" [paymentSplit]="data.dialogData.paymentSplit"
-        (updateSplitEvent)="updatePaymentSplit($event)"></app-manage-account>
+    <app-manage-split [article]="data.dialogData.article" [paymentSplit]="data.dialogData.paymentSplit"
+        (updateSplitEvent)="updatePaymentSplit($event)"></app-manage-split>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
     <button mat-button mat-dialog-close class="btn btn-outline-dark">Cancel</button>

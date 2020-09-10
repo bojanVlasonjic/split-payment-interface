@@ -21,9 +21,6 @@ public class Account {
     private String number;
 
     @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
     private String recipientName;
 
     @Column(nullable = false)
@@ -36,7 +33,6 @@ public class Account {
     public Account(AccountDto accountDto, AppUser appUser) {
         this.id = accountDto.getId();
         this.number = accountDto.getNumber();
-        this.name = accountDto.getName();
         this.recipientName = accountDto.getRecipientName();
         this.recipientAddress = accountDto.getRecipientAddress();
 
@@ -46,8 +42,7 @@ public class Account {
     }
 
     public void updateValues(AccountDto accountDto) {
-        this.name = accountDto.getName();
-        this.recipientName = accountDto.getName();
+        this.recipientName = accountDto.getRecipientName();
         this.recipientAddress = accountDto.getRecipientAddress();
     }
 

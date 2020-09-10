@@ -7,7 +7,6 @@ import { ManageArticleComponent } from './components/manage-article/manage-artic
 import { ViewArticlesComponent } from './components/view-articles/view-articles.component';
 import { PaymentFlowComponent } from './components/payment-flow/payment-flow.component';
 import { ChartsModule } from 'ng2-charts';
-import { ManageAccountComponent } from './components/manage-account/manage-account.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSelectModule } from '@angular/material/select';
@@ -19,6 +18,7 @@ import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/materia
 import { ConfigureSplitDialogComponent } from './components/configure-split-dialog/configure-split-dialog.component';
 import {MatRadioModule} from '@angular/material/radio';
 import { HomeComponent } from './components/home/home.component';
+import { ManageSplitComponent } from './components/manage-split/manage-split.component';
 
 @NgModule({
   declarations: [
@@ -26,9 +26,9 @@ import { HomeComponent } from './components/home/home.component';
     ManageArticleComponent,
     ViewArticlesComponent,
     PaymentFlowComponent,
-    ManageAccountComponent,
     ConfigureSplitDialogComponent,
-    HomeComponent
+    HomeComponent,
+    ManageSplitComponent
   ],
   imports: [
     BrowserModule,

@@ -25,16 +25,6 @@
     </div>
     <div class="form-group">
         <mat-form-field class="full-width">
-            <mat-label>Account name</mat-label>
-            <input matInput [(ngModel)]="paymentSplit.account.name" name="accName" id="accName"
-                required #accName="ngModel" autocomplete="off">
-        </mat-form-field>
-        <small [hidden]="accName.valid || accName.pristine" class="error-message">
-            Account name is required
-        </small> 
-    </div>
-    <div class="form-group">
-        <mat-form-field class="full-width">
             <mat-label>Account owner</mat-label>
             <input matInput [(ngModel)]="paymentSplit.account.recipientName" name="accOwner" id="accOwner"
                 required #accOwner="ngModel" autocomplete="off">
@@ -59,15 +49,26 @@
     <br/>
 
     <mat-radio-group [(ngModel)]="splitType" name="splitType">
-    <mat-radio-button value="fixed" class="splitTypeRadio">
-      Fixed (rsd)
-    </mat-radio-button>
-    <mat-radio-button value="percentual" class="split-type-radio">
-        Percentual (%)
-    </mat-radio-button>
-  </mat-radio-group>
+        <mat-radio-button value="fixed" class="splitTypeRadio">
+            Fixed (rsd)
+        </mat-radio-button>
+        <mat-radio-button value="percentual" class="split-type-radio">
+            Percentual (%)
+        </mat-radio-button>
+    </mat-radio-group>
 
-    <div class="form-row" [ngClass]="{'disabled-slider': splitType != 'fixed'}">
+    <!-- Dummy disabled slider -->
+    <div class="form-row disabled-slider" *ngIf="splitType == ''">
+        <div class="form-group col-9">
+            <mat-slider min="1" max="100" step="1" value="1">
+            </mat-slider>
+        </div>
+        <div class="form-group col-3">
+            <input type="number" class="form-control">
+        </div>
+    </div>
+
+    <div class="form-row" *ngIf="splitType == 'fixed'">
         <div class="form-group col-9">
             <mat-slider min="1" [max]="article.price" step="1" value="1"
                 thumbLabel (input)="onFixedValueChange($event)" name="fixedInvestmentSlider"
@@ -80,7 +81,7 @@
         </div>
     </div>
     
-    <div class="form-row" [ngClass]="{'disabled-slider': splitType != 'percentual'}">
+    <div class="form-row" *ngIf="splitType == 'percentual'">
         <div class="form-group col-9">
             <mat-slider min="1" max="100" step="1" value="1" thumbLabel 
                 (input)="onPercentualValueChange($event)" name="percentualInvestmentSlider"
@@ -92,25 +93,34 @@
                 [(ngModel)]="investmentPercentage" (input)="onPercentualInputChange($event)">
         </div>
     </div>
+
     <div class="form-row">
         <div class="col-12">
             <small class="big-error-message" *ngIf="paymentSplit.amount <= 0 && accountForm.submitted">
                 Amount to transfer must be specified
             </small>
         </div>
-    </div>  
+    </div> 
+    
+    <div class="row">
+        <div class="col-6">
+            <label class="highlighted-text">
+                Amount to transfer: &nbsp;  <b> {{ paymentSplit.amount }} rsd </b>
+            </label>
+        </div>
 
-    <label class="highlighted-text">Amount to transfer: &nbsp; {{ paymentSplit.amount }} rsd </label>
+        <div class="col-6">
+            <button type="submit" class="btn btn-dark full-width" *ngIf="!isUpdating" (click)="createPaymentSplit()"
+                [disabled]="!accountForm.form.valid || accountNumControl.errors">
+                 Add split
+            </button>
+            <button type="submit" class="btn btn-dark full-width" *ngIf="isUpdating" (click)="updatePaymentSplit()"
+                [disabled]="!accountForm.form.valid || accountNumControl.errors">
+                Update split
+            </button>
+        </div>
+    </div>
 
-    <br/>
-    <button type="submit" class="btn btn-dark" *ngIf="!isUpdating" (click)="createPaymentSplit()"
-        [disabled]="!accountForm.form.valid || accountNumControl.errors">
-        Add account
-    </button>
-    <button type="submit" class="btn btn-dark" *ngIf="isUpdating" (click)="updatePaymentSplit()"
-        [disabled]="!accountForm.form.valid || accountNumControl.errors">
-        Update account
-    </button>
 </form>
 
 

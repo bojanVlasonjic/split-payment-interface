@@ -3,8 +3,6 @@
     <div class="col-12 article-holder">
         <h3 class="heading"> Split payment flow </h3>
 
-        <p> Currently configuring for the following article: </p>
-
         <label class="identifier"> Article name: </label>
         <label class="text-value"> {{ article.name }} </label>
         <br/>
@@ -14,9 +12,8 @@
     </div>
 
     <div class="col-md-6">
-        <h4 class="option-header">New account</h4>
-        <p class="hint-text">Fill out the information below the create a new account: </p>
-        <app-manage-account [article]="article" (createSplitEvent)="addNewSplit($event)"></app-manage-account>
+        <h4 class="option-header">Insert new split</h4>
+        <app-manage-split [article]="article" (createSplitEvent)="addNewSplit($event)"> </app-manage-split>
     </div>
 
 
