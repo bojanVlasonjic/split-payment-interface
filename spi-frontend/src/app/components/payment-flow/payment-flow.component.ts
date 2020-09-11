@@ -86,9 +86,6 @@ export class PaymentFlowComponent implements OnInit {
 
     if(!this.isSplitAdded($paySplit.account.number)) {
       this.createPaymentSplit($paySplit);
-      setTimeout(() => {
-        window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
-      }, 100)
     } else {
       this.snackBar.open(`Account with number ${$paySplit.account.number} has already been added`);
     }

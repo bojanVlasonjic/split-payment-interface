@@ -17,6 +17,7 @@ export class ViewArticlesComponent implements OnInit {
   requestFinished: boolean = true;
 
   searchValue: string = '';
+  clickedArticleId: number = undefined;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -27,6 +28,15 @@ export class ViewArticlesComponent implements OnInit {
 
   ngOnInit() {
     this.searchArticles();
+    if (this.router.url.includes('payment-flow')) {
+      this.highlightArticle();
+    }
+  }
+
+  highlightArticle(): void {
+    const idStart = this.router.url.lastIndexOf('/');
+    const idStr = this.router.url.substr(idStart+1);
+    this.clickedArticleId = +idStr;
   }
 
   displayError(err: any): void {
@@ -59,7 +69,7 @@ export class ViewArticlesComponent implements OnInit {
   }
 
   configurePaymentFlow(article: Article) {
-    this.router.navigate(['payment-flow']);
+    this.clickedArticleId = article.id;
     this.router.navigate([`payment-flow/${article.id}`], {relativeTo: this.activatedRoute});
   }
   

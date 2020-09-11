@@ -38,11 +38,15 @@
                 </div> 
 
                 <div class="col-12" *ngFor="let article of articlePage.articles">
-                    <div class="card text-white bg-dark mb-3" (click)="configurePaymentFlow(article)">
+                    <div [ngClass]="(clickedArticleId == article.id) ? 'card text-white bg-secondary mb-3' : 'card text-white bg-dark mb-3'"
+                        (click)="configurePaymentFlow(article, i)">
                         <div class="card-body">
-                            <h5 class="card-title">{{ article.name }} <span class="remove-icon"> &times; </span> </h5>
+                            <h5 class="card-title">
+                                {{ article.name }}
+                                <span class="remove-icon"> &times; </span>
+                            </h5>
                             <p class="card-text"> Price: &nbsp; {{ article.price }} rsd</p>
-                            <button type="button" class="btn btn-secondary right-btn">
+                            <button type="button" class="btn btn-primary">
                                 Edit article
                             </button>
                         </div>
