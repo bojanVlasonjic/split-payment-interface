@@ -45,4 +45,10 @@ public class ArticleController {
                 HttpStatus.CREATED
         );
     }
+
+    @DeleteMapping("/{articleId}")
+    public ResponseEntity<Long> deleteArticle(@PathVariable Long articleId) {
+
+        return ResponseEntity.ok(articleService.deleteArticle(articleId));
+    }
 }

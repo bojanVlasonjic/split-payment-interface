@@ -63,14 +63,41 @@ export class ViewArticlesComponent implements OnInit {
     );
   }
 
+  removeArticle(article: Article, index: number) {
+
+    if(!window.confirm(`Are you sure you want to delete article \"${article.name}\"`)) {
+      return;
+    }
+
+    this.articleService.deleteArticle(article.id).subscribe(
+      data => {
+        if(this.articlePage.articles.length == 1 && this.currentPage > 0) {
+          this.currentPage--;
+        }
+        this.searchArticles();
+        this.snackBar.open('Article successfully deleted');
+        if (this.router.url.includes('payment-flow')) {
+          this.router.navigate(['my-articles']);
+        }
+      },
+      err => {
+        this.snackBar.open(err.error.message);
+      }
+    )
+  }
+
   performSearch(): void {
     this.currentPage = 0;
     this.searchArticles();
   }
 
   configurePaymentFlow(article: Article) {
-    this.clickedArticleId = article.id;
+    this.articleClicked(article.id);
     this.router.navigate([`payment-flow/${article.id}`], {relativeTo: this.activatedRoute});
+  }
+
+  articleClicked(id: number) {
+    this.clickedArticleId = id;
   }
   
   nextPageClicked(): void {

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -80,5 +79,19 @@ public class ArticleService {
             throw new ApiBadRequestException("Failed to save article. Please refresh the page and try again");
         }
 
+    }
+
+    public Long deleteArticle(Long articleId) {
+
+        Article article = this.findById(articleId);
+
+        try {
+            articleRepository.delete(article);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ApiBadRequestException("Failed to delete article. Please refresh the page and try again");
+        }
+
+        return article.getId();
     }
 }
