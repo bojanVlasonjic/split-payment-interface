@@ -6,16 +6,21 @@
         <div class="col-3 side-nav">
             <div class="row">
                 
-                <div class="col-lg-8 header">
+                <div class="col-12 header">
                     <h3 class="centered-content"> My articles </h3>
                 </div>
-                <div class="col-lg-2 col-sm-6 header">
+
+                <div class="col-lg-6 col-sm-12 header centered-content">
+                    Page {{ currentPage+1 }} / {{ articlePage.totalPages }}
+                </div>
+
+                <div class="col-lg-3 col-sm-6 header">
                     <button type="button" class="btn btn-dark full-width" [disabled]="currentPage == 0"
                         (click)="previousPageClicked()">
                         &lt;
                     </button>
                 </div>
-                <div class="col-lg-2 col-sm-6 header">
+                <div class="col-lg-3 col-sm-6 header">
                     <button type="button" class="btn btn-dark full-width" (click)="nextPageClicked()"
                         [disabled]="articlePage.totalPages - currentPage == 1">
                         &gt;
