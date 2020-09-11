@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,8 +25,32 @@ public class ArticleService {
     @Autowired
     private AppUserService userService;
 
-    private static final int elementsPerPage = 6;
+    private static final int elementsPerPage = 4;
 
+
+    public List<ArticleDto> searchArticles(String name, int pageNum) {
+
+        // TODO: get user id
+        /*
+        int pageNum;
+        try {
+            pageNum = Integer.parseInt(pageStr);
+        } catch(Exception ex) {
+            throw new ApiBadRequestException("Invalid page number");
+        }*/
+
+        if(pageNum < 0) {
+            throw new ApiBadRequestException("Invalid page number");
+        }
+
+        Pageable pageable = PageRequest.of(pageNum, elementsPerPage);
+        return articleRepository
+                .findByUserIdAndNameContainingOrderByNameAsc(-1L, name, pageable)
+                .stream()
+                .map(ArticleDto::new)
+                .collect(Collectors.toList());
+
+    }
 
     public List<ArticleDto> getUserArticles(Long userId, int pageNum) {
 
@@ -36,7 +61,7 @@ public class ArticleService {
         Pageable pageable = PageRequest.of(pageNum, elementsPerPage);
 
         return articleRepository
-                .findByUserId(userId, pageable)
+                .findByUserIdOrderByNameAsc(userId, pageable)
                 .stream()
                 .map(ArticleDto::new)
                 .collect(Collectors.toList());

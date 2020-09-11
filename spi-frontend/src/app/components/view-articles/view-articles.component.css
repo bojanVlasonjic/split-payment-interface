@@ -6,20 +6,11 @@
 .spinner {
     padding: 2ex;
     margin-top: 2ex;
-
 }
 
-.identifier {
-    border-bottom: 1px solid black;
-    padding: 1ex;
-}
-
-.value {
-    padding: 1ex;
-}
 
 .card {
-    max-width: 18rem;
+    max-width: 15rem;
 }
 
 .remove-icon {
@@ -34,10 +25,15 @@
     font-weight: 1000;
 }
 
-.left-btn {
-    float: left;
+.card:hover {
+    -webkit-box-shadow: 0px -1px 42px 9px rgba(0,0,0,0.69);
+    -moz-box-shadow: 0px -1px 42px 9px rgba(0,0,0,0.69);
+    box-shadow: 0px -1px 42px 9px rgba(0,0,0,0.69);
+    cursor: pointer;
 }
 
-.right-btn {
-    float: right;
+.side-nav {
+    background-image: url(../../../assets/images/paper_1.png);
+    background-repeat:repeat;
+    min-height: 90vh;
 }

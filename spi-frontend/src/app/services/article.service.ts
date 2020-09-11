@@ -15,6 +15,10 @@ export class ArticleService {
     return this.http.get(`api/article/${userId}/${pageNum}`);
   }
 
+  searchArticles(name: string, pageNum: number): Observable<any> {
+    return this.http.get(`api/article?name=${name}&pageNum=${pageNum}`);
+  }
+
   getArticleById(articleId: number): Observable<any> {
     return this.http.get(`api/article/${articleId}`);
   }

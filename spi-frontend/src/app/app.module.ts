@@ -19,6 +19,7 @@ import { ConfigureSplitDialogComponent } from './components/configure-split-dial
 import {MatRadioModule} from '@angular/material/radio';
 import { HomeComponent } from './components/home/home.component';
 import { ManageSplitComponent } from './components/manage-split/manage-split.component';
+import {MatSidenavModule} from '@angular/material/sidenav';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,9 @@ import { ManageSplitComponent } from './components/manage-split/manage-split.com
     MatInputModule,
     MatSnackBarModule,
     MatDialogModule,
-    MatRadioModule
+    MatRadioModule,
+    MatSidenavModule
+    
   ],
   providers: [
     {

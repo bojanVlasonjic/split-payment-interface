@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Article } from 'src/app/data/article';
 import { PaymentSplit } from 'src/app/data/payment-split';
 import { MatSnackBar, MatDialog, MatDialogRef } from '@angular/material';
@@ -24,7 +24,6 @@ export class PaymentFlowComponent implements OnInit {
   chartOptions: any = { maintainAspectRatio: false, responsive: true };
 
   article: Article;
-  paymentSplits: Array<PaymentSplit>;
 
   dialogRef: MatDialogRef<ConfigureSplitDialogComponent>;
 
@@ -40,9 +39,6 @@ export class PaymentFlowComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.paymentSplits = [];
-    this.article = new Article();
-    
     this.route.params.subscribe(
       params => {
         this.getArticle(params['id']);
@@ -50,13 +46,22 @@ export class PaymentFlowComponent implements OnInit {
     );
   }
 
+  resetChart(): void {
+    this.pieChartData = [];
+    this.pieChartLabels = [];
+    this.labelColors = [{backgroundColor: []}];
+  }
+
   getArticle(articleId: number) {
+    this.accObservService.resetForm();
+
     this.articleService.getArticleById(articleId).subscribe(
       data => {
         this.article = data;
+        this.resetChart();
         this.insertRemainderIntoChart();
         this.article.paymentSplits.forEach(split => {
-          this.insertSplitInChart(split);
+          this.insertSplitInChart(split, false);
         });
       },
       err => {
@@ -95,7 +100,7 @@ export class PaymentFlowComponent implements OnInit {
     paySplit.articleId = this.article.id;
     this.paymentSplitService.createPaymentSplit(paySplit).subscribe(
       data => {
-        this.insertSplitInChart(data);
+        this.insertSplitInChart(data, true);
         this.accObservService.sendAccount(data.account);
       },
       err => {
@@ -106,7 +111,7 @@ export class PaymentFlowComponent implements OnInit {
 
   updatePaymentSplit(dialogData: SplitDialogData) {
 
-    const currentSplit = this.paymentSplits[dialogData.paySplitIndex];
+    const currentSplit = this.article.paymentSplits[dialogData.paySplitIndex];
     if(this.pieChartData[0] + currentSplit.amount - dialogData.paymentSplit.amount < 0) {
       this.snackBar.open('Insufficient funds');
       return;
@@ -114,7 +119,6 @@ export class PaymentFlowComponent implements OnInit {
 
     this.paymentSplitService.updatePaymentSplit(dialogData.paymentSplit).subscribe(
       data => {
-        this.accObservService.sendAccount(data);
         this.updateSplitInChart(data, dialogData.paySplitIndex);
         this.dialogRef.close();
       },
@@ -140,31 +144,34 @@ export class PaymentFlowComponent implements OnInit {
   removeSplitFromChart(split: PaymentSplit, splitIndex: number) {
     this.pieChartData[0] += split.amount; // add the amount to the remainder
 
-    this.paymentSplits.splice(splitIndex, 1);
+    this.article.paymentSplits.splice(splitIndex, 1);
     this.pieChartLabels.splice(splitIndex + 1, 1); // adding +1 to skip the label indicating the remaining amount
     this.pieChartData.splice(splitIndex + 1, 1);
   }
 
   updateSplitInChart(split: PaymentSplit, splitIndex: number): void {
-    this.pieChartData[0] += this.paymentSplits[splitIndex].amount; // add old amount to the remainder price
+    this.pieChartData[0] += this.article.paymentSplits[splitIndex].amount; // add old amount to the remainder price
     this.pieChartData[0] -= split.amount; // decrease new amount from the remainder price
 
-    this.paymentSplits[splitIndex] = split;
+    this.article.paymentSplits[splitIndex] = split;
     this.pieChartLabels[splitIndex + 1] = split.account.recipientName; // adding +1 to skip the label indicating the remaining amount
     this.pieChartData[splitIndex + 1] = split.amount;
   }
 
-  insertSplitInChart(split: PaymentSplit): void {
+  insertSplitInChart(split: PaymentSplit, isNew: boolean): void {
       this.pieChartData[0] -= split.amount;
-      this.paymentSplits.push(split);
       this.pieChartLabels.push(split.account.recipientName);
       this.pieChartData.push(split.amount);
       this.labelColors[0].backgroundColor.push(this.generateRandomColor());
+
+      if(isNew) {
+        this.article.paymentSplits.push(split);
+      }
   }
 
   isSplitAdded(accountNum: string): boolean {
     var isAdded = false;
-    this.paymentSplits.forEach( split => {
+    this.article.paymentSplits.forEach( split => {
       if (split.account.number === accountNum) {
         isAdded = true;
       }
@@ -196,7 +203,7 @@ export class PaymentFlowComponent implements OnInit {
     const splitDialogData = new SplitDialogData();
     splitDialogData.article = this.article;
     splitDialogData.paymentSplit = new PaymentSplit();
-    splitDialogData.paymentSplit.updateValues(this.paymentSplits[paySplitIndex]);
+    splitDialogData.paymentSplit.updateValues(this.article.paymentSplits[paySplitIndex]);
     splitDialogData.paySplitIndex = paySplitIndex;
 
     this.dialogRef = this.dialog.open(ConfigureSplitDialogComponent, {

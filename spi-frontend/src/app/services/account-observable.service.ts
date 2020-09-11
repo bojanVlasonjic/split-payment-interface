@@ -17,6 +17,10 @@ export class AccountObservableService {
     this.accSubject.next(acc);
   }
 
+  resetForm(): void {
+    this.accSubject.next(null);
+  }
+
   getAccount(): Observable<any> {
     return this.accSubject.asObservable();
   }

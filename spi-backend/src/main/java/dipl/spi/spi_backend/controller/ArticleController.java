@@ -17,6 +17,12 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
+    @GetMapping
+    public ResponseEntity<List<ArticleDto>> searchArticles(@RequestParam(defaultValue = "") String name,
+                                                           @RequestParam(defaultValue = "0") int pageNum) {
+        return ResponseEntity.ok(articleService.searchArticles(name, pageNum));
+    }
+
     @GetMapping("/{userId}/{pageNum}")
     public ResponseEntity<List<ArticleDto>> getUserArticles(@PathVariable Long userId,
                                                             @PathVariable int pageNum) {

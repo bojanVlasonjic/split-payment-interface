@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input, OnDestroy, ViewChild } from '@angular/core';
 import { PaymentSplit } from 'src/app/data/payment-split';
 import { AccountService } from 'src/app/services/account.service';
 import { Account } from 'src/app/data/account';
@@ -7,6 +7,7 @@ import { map, startWith } from 'rxjs/operators';
 import { Article } from 'src/app/data/article';
 import { FormControl, Validators } from '@angular/forms';
 import { AccountObservableService } from 'src/app/services/account-observable.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-manage-split',
@@ -31,9 +32,12 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
   @Input() article: Article;
   @Input() paymentSplit: PaymentSplit;
 
+  @ViewChild("splitForm", {static: false}) splitForm: any;
+
   constructor(
     private accountService: AccountService,
-    private accObservService: AccountObservableService
+    private accObservService: AccountObservableService,
+    private snackBar: MatSnackBar
     ) { }
 
   ngOnInit() {
@@ -52,14 +56,28 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
     // update user accounts
     this.accObservSubscription = this.accObservService.getAccount().subscribe(
       data => {
-        const accIndex = this.getAccountIndexByNumber(data.number); 
-        if (accIndex == -1) {
-          this.userAccounts.push(data);
+        if (data != null) {
+          const accIndex = this.getAccountIndexByNumber(data.number); 
+          if (accIndex == -1) {
+            this.userAccounts.push(data);
+          } else {
+            this.userAccounts[accIndex] = data;
+          }
         } else {
-          this.userAccounts[accIndex] = data;
+          this.resetForm();
         }
+        
       }
     );
+  }
+
+  resetForm(): void {
+    this.accountNumControl.reset();
+    this.splitForm.reset();
+    this.splitForm.submitted = false;
+    this.splitType = '';
+    this.paymentSplit = new PaymentSplit();
+    //  this.getUserAccounts();
   }
 
   initAutocompleteFilter(): void {
@@ -75,7 +93,7 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
         this.userAccounts = data;
       },
       err => {
-        console.log(err.error);
+        this.snackBar.open('Failed to find your added accounts. Please refresh the page and try again');
       }
     );
   }
@@ -115,7 +133,6 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
     this.paymentSplit.amount = Math.round(($event.target.value/100) * this.article.price);
   }
 
-
   private _filter(value: string): Account[] {
     return this.userAccounts.filter(acc => acc.number.includes(value));
   }
@@ -138,6 +155,7 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    console.log('destroyed');
     this.accObservSubscription.unsubscribe();
   }
 

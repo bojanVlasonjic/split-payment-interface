@@ -17,16 +17,18 @@ const routes: Routes = [
     component: HomeComponent
   },
   {
-    path: 'payment-flow/:id',
-    component: PaymentFlowComponent
-  },
-  {
     path: 'manage-article',
     component: ManageArticleComponent
   },
   {
     path: 'my-articles',
-    component: ViewArticlesComponent
+    component: ViewArticlesComponent,
+    children: [
+      {
+        path: 'payment-flow/:id',
+        component: PaymentFlowComponent
+      }
+    ]
   }
 ];
 
