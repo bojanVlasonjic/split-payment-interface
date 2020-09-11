@@ -1,6 +1,7 @@
 package dipl.spi.spi_backend.controller;
 
 import dipl.spi.spi_backend.dto.ArticleDto;
+import dipl.spi.spi_backend.dto.ArticlePageDto;
 import dipl.spi.spi_backend.service.AccountService;
 import dipl.spi.spi_backend.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,8 @@ public class ArticleController {
     private ArticleService articleService;
 
     @GetMapping
-    public ResponseEntity<List<ArticleDto>> searchArticles(@RequestParam(defaultValue = "") String name,
-                                                           @RequestParam(defaultValue = "0") int pageNum) {
+    public ResponseEntity<ArticlePageDto> searchArticles(@RequestParam(defaultValue = "") String name,
+                                                         @RequestParam(defaultValue = "0") int pageNum) {
         return ResponseEntity.ok(articleService.searchArticles(name, pageNum));
     }
 

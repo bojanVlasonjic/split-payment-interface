@@ -1,14 +1,14 @@
 package dipl.spi.spi_backend.service;
 
 import dipl.spi.spi_backend.dto.ArticleDto;
+import dipl.spi.spi_backend.dto.ArticlePageDto;
 import dipl.spi.spi_backend.exception.ApiBadRequestException;
 import dipl.spi.spi_backend.exception.ApiNotFoundException;
 import dipl.spi.spi_backend.model.AppUser;
 import dipl.spi.spi_backend.model.Article;
 import dipl.spi.spi_backend.repository.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -28,27 +28,18 @@ public class ArticleService {
     private static final int elementsPerPage = 4;
 
 
-    public List<ArticleDto> searchArticles(String name, int pageNum) {
+    public ArticlePageDto searchArticles(String name, int pageNum) {
 
         // TODO: get user id
-        /*
-        int pageNum;
-        try {
-            pageNum = Integer.parseInt(pageStr);
-        } catch(Exception ex) {
-            throw new ApiBadRequestException("Invalid page number");
-        }*/
 
         if(pageNum < 0) {
             throw new ApiBadRequestException("Invalid page number");
         }
 
-        Pageable pageable = PageRequest.of(pageNum, elementsPerPage);
-        return articleRepository
-                .findByUserIdAndNameContainingOrderByNameAsc(-1L, name, pageable)
-                .stream()
-                .map(ArticleDto::new)
-                .collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(pageNum, elementsPerPage, Sort.by("name").ascending());
+        Page<Article> articlePage = articleRepository.findByUserIdAndNameContaining(-1L, name ,pageable);
+
+        return new ArticlePageDto(articlePage);
 
     }
 

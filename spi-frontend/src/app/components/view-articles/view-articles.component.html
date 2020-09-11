@@ -5,27 +5,39 @@
         <!-- Side nav -->
         <div class="col-3 side-nav">
             <div class="row">
-
-                <div class="col-12">
+                
+                <div class="col-lg-8 header">
                     <h3 class="centered-content"> My articles </h3>
                 </div>
-
-                <div class="form-group col-12">
-                    <input type="text" placeholder="Search" class="form-control" (keyup)="performSearch($event)">
+                <div class="col-lg-2 col-sm-6 header">
+                    <button type="button" class="btn btn-dark full-width" [disabled]="currentPage == 0"
+                        (click)="previousPageClicked()">
+                        &lt;
+                    </button>
                 </div>
-
-                <div class="col-12 text-center spinner spinner-border-lg"
-                    *ngIf="!requestFinished && userArticles.length == 0">
+                <div class="col-lg-2 col-sm-6 header">
+                    <button type="button" class="btn btn-dark full-width" (click)="nextPageClicked()"
+                        [disabled]="articlePage.totalPages - currentPage == 1">
+                        &gt;
+                    </button>
+                </div>
+        
+                <div class="form-group col-lg-10 col-sm-12">
+                    <input type="text" placeholder="Search" class="form-control" (keyup)="performSearch()"
+                        [(ngModel)]="searchValue">
+                </div>
+                <div class="col-lg-2 col-sm-12" *ngIf="!requestFinished">
                     <div class="spinner-border" role="status">
                     <span class="sr-only">Loading...</span>
                     </div>
                 </div>
+                
 
-                <div class="col-12" *ngIf="requestFinished && userArticles.length == 0">
+                <div class="col-12" *ngIf="requestFinished && articlePage.articles.length == 0">
                     <h3 class="centered-content"> No articles have been found </h3>
                 </div> 
 
-                <div class="col-12" *ngFor="let article of userArticles">
+                <div class="col-12" *ngFor="let article of articlePage.articles">
                     <div class="card text-white bg-dark mb-3" (click)="configurePaymentFlow(article)">
                         <div class="card-body">
                             <h5 class="card-title">{{ article.name }} <span class="remove-icon"> &times; </span> </h5>
@@ -45,42 +57,3 @@
         </div>
     </div>
 </div>
-
-
-<!-- 
-<div class="text-center spinner spinner-border-lg" *ngIf="!requestFinished">
-    <div class="spinner-border" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-</div>
-
-<div class="row">
-
-    <div class="col-12" *ngIf="requestFinished && userArticles.length == 0">
-        <h3 class="centered-content"> No articles have been found </h3>
-    </div> 
-
-    <div class="col-12" *ngIf="requestFinished && userArticles.length != 0">
-        <h3 class="centered-content"> My articles </h3>
-    </div> 
-
-    <div class="col-md-4 col-sm-6" *ngFor="let article of userArticles">
-        <div class="card text-white bg-dark mb-3" >
-            <div class="card-header">
-                {{ article.name }}
-                <span class="remove-icon"> &times; </span>
-            </div>
-            <div class="card-body">
-              <p class="card-text"> Price: &nbsp; {{ article.price }} rsd</p>
-                <button type="button" class="btn btn-secondary left-btn" (click)="redirectToPaymentFlow(article.id)">
-                    Payment flow
-                </button>
-                <button type="button" class="btn btn-secondary right-btn">
-                    Edit article
-                </button>
-            </div>
-        </div>
-    </div>
-
-</div>
--->

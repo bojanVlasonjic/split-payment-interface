@@ -1,6 +1,5 @@
-.centered-content {
-    padding: 2ex;
-    text-align: center;
+.header {
+    padding: 1ex;
 }
 
 .spinner {
@@ -8,6 +7,9 @@
     margin-top: 2ex;
 }
 
+.full-width {
+    width: 100%;
+}
 
 .card {
     max-width: 15rem;
@@ -36,4 +38,8 @@
     background-image: url(../../../assets/images/paper_1.png);
     background-repeat:repeat;
     min-height: 90vh;
+}
+
+.centered-content {
+    text-align: center;
 }

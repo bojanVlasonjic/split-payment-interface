@@ -3,6 +3,7 @@ import { ArticleService } from 'src/app/services/article.service';
 import { Article } from 'src/app/data/article';
 import { MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
+import { ArticlePage } from 'src/app/data/article-page';
 
 @Component({
   selector: 'app-view-articles',
@@ -11,9 +12,11 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class ViewArticlesComponent implements OnInit {
 
-  pageNum: number = 0;
-  userArticles: Array<Article> = [];
+  currentPage: number = 0;
+  articlePage: ArticlePage = new ArticlePage();
   requestFinished: boolean = true;
+
+  searchValue: string = '';
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -23,12 +26,7 @@ export class ViewArticlesComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getUserArticles();
-  }
-
-  getUserArticles(): void {
-    this.requestFinished = false;
-    this.searchArticles('', 0);
+    this.searchArticles();
   }
 
   displayError(err: any): void {
@@ -39,11 +37,11 @@ export class ViewArticlesComponent implements OnInit {
     }
   }
 
-  searchArticles(name: string, pageNum: number): void {
-
-    this.articleService.searchArticles(name, this.pageNum).subscribe(
+  searchArticles(): void {
+    this.requestFinished = false;
+    this.articleService.searchArticles(this.searchValue, this.currentPage).subscribe(
       data => {
-        this.userArticles = data;
+        this.articlePage = data;
       },
       err => {
         this.displayError(err);
@@ -55,13 +53,24 @@ export class ViewArticlesComponent implements OnInit {
     );
   }
 
-  performSearch($event): void {
-    this.searchArticles($event.target.value, 0);
+  performSearch(): void {
+    this.currentPage = 0;
+    this.searchArticles();
   }
 
   configurePaymentFlow(article: Article) {
     this.router.navigate(['payment-flow']);
     this.router.navigate([`payment-flow/${article.id}`], {relativeTo: this.activatedRoute});
+  }
+  
+  nextPageClicked(): void {
+    this.currentPage++;
+    this.searchArticles();
+  }
+
+  previousPageClicked(): void {
+    this.currentPage--;
+    this.searchArticles();
   }
 
 }
