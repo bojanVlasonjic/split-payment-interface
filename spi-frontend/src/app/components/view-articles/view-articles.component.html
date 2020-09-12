@@ -43,7 +43,7 @@
                 </div> 
 
                 <div class="col-12" *ngFor="let article of articlePage.articles; index as i">
-                    <div [ngClass]="(clickedArticleId == article.id) ? 'card text-white bg-secondary mb-3' : 'card text-white bg-dark mb-3'">
+                    <div [ngClass]="(clickedArticleId == article.id) ? 'card text-white bg-secondary mb-3 shadow-on' : 'card text-white bg-dark mb-3'">
                         <div class="card-body">
                             <h5 class="card-title">
                                 {{ article.name }}

@@ -27,17 +27,16 @@
     font-weight: 1000;
 }
 
-.card:hover {
+.shadow-on {
     -webkit-box-shadow: 0px -1px 42px 9px rgba(0,0,0,0.69);
     -moz-box-shadow: 0px -1px 42px 9px rgba(0,0,0,0.69);
     box-shadow: 0px -1px 42px 9px rgba(0,0,0,0.69);
-    cursor: pointer;
 }
 
 .side-nav {
     background-image: url(../../../assets/images/paper_1.png);
     background-repeat:repeat;
-    min-height: 90vh;
+    min-height: 95vh;
 }
 
 .centered-content {
