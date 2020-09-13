@@ -52,7 +52,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
   providers: [
     {
     provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
-    useValue: {duration: 2500}
+    useValue: {duration: 4000}
     }
   ],
   entryComponents: [ConfigureSplitDialogComponent],

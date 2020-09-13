@@ -24,6 +24,9 @@ public class ArticleService {
     @Autowired
     private AppUserService userService;
 
+    @Autowired
+    private PaymentSplitService paymentSplitService;
+
     private static final int elementsPerPage = 4;
 
 
@@ -79,6 +82,25 @@ public class ArticleService {
             throw new ApiBadRequestException("Failed to save article. Please refresh the page and try again");
         }
 
+    }
+
+    public ArticleDto updateArticle(ArticleDto articleDto) {
+
+        if(articleDto.getId() != null) {
+            Article article = this.findById(articleDto.getId());
+
+            if(articleDto.getPrice() < article.getPrice() &&
+                    paymentSplitService.getPaymentSplitsForArticle(article.getId()).size() > 0) {
+                throw new ApiBadRequestException("Can't decrease price for article with payment splits");
+            }
+
+            article.updateValues(articleDto);
+            articleRepository.save(article);
+        } else {
+            throw new ApiBadRequestException("Invalid article id");
+        }
+
+        return articleDto;
     }
 
     public Long deleteArticle(Long articleId) {

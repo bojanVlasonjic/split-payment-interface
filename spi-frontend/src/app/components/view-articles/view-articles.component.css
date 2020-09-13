@@ -2,6 +2,10 @@
     padding: 1ex;
 }
 
+.white-text {
+    color: white;
+}
+
 .spinner {
     padding: 2ex;
     margin-top: 2ex;
@@ -34,7 +38,7 @@
 }
 
 .side-nav {
-    background-image: url(../../../assets/images/paper_1.png);
+    background-image: url(../../../assets/images/grey_wash_wall.png);
     background-repeat:repeat;
     min-height: 95vh;
 }

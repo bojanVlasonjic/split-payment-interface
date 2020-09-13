@@ -27,6 +27,10 @@ const routes: Routes = [
       {
         path: 'payment-flow/:id',
         component: PaymentFlowComponent
+      },
+      {
+        path: 'manage-article/:id',
+        component: ManageArticleComponent
       }
     ]
   }

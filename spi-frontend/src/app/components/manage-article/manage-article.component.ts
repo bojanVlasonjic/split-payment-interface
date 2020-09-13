@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Article } from 'src/app/data/article';
 import { ArticleService } from 'src/app/services/article.service';
 import { MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ArticleObservableService } from 'src/app/services/article-observable.service';
 
 @Component({
   selector: 'app-manage-article',
@@ -10,15 +12,29 @@ import { MatSnackBar } from '@angular/material';
 })
 export class ManageArticleComponent implements OnInit {
 
+  isEditing: boolean = false;
   article: Article = new Article();
   @ViewChild("articleForm", {static: false}) articleForm: any;
 
   constructor(
     private articleService: ArticleService,
-    private snackBar: MatSnackBar
+    private articleObservService: ArticleObservableService,
+    private snackBar: MatSnackBar,
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit() {
+    this.route.params.subscribe(
+      params => {
+        if(params['id'] !== undefined) {
+          this.getArticle(params['id']);
+          this.isEditing = true;
+        } else {
+          this.isEditing = false;
+        }
+      }
+    );
   }
 
   createArticle(): void {
@@ -29,6 +45,30 @@ export class ManageArticleComponent implements OnInit {
       },
       err => {
         this.displayError(err);
+      }
+    );
+  }
+
+  updateArticle(): void {
+    this.articleService.updateArticle(this.article).subscribe(
+      data => {
+        this.snackBar.open('Article successfully updated');
+        this.articleObservService.sendArticle(data);
+      },
+      err => {
+        this.displayError(err);
+      }
+    );
+  }
+
+  getArticle(id: number): void {
+    this.articleService.getArticleById(id).subscribe(
+      data => {
+        this.article = data;
+      },
+      err => {
+        this.displayError(err);
+        this.router.navigate(['home']);
       }
     );
   }

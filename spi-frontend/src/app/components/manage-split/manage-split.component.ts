@@ -77,7 +77,7 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
     this.splitForm.submitted = false;
     this.splitType = '';
     this.paymentSplit = new PaymentSplit();
-    //  this.getUserAccounts();
+ 
   }
 
   initAutocompleteFilter(): void {
@@ -155,7 +155,6 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log('destroyed');
     this.accObservSubscription.unsubscribe();
   }
 

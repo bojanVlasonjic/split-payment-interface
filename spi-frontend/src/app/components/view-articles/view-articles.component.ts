@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ArticleService } from 'src/app/services/article.service';
 import { Article } from 'src/app/data/article';
 import { MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ArticlePage } from 'src/app/data/article-page';
+import { ArticleObservableService } from 'src/app/services/article-observable.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-view-articles',
   templateUrl: './view-articles.component.html',
   styleUrls: ['./view-articles.component.css']
 })
-export class ViewArticlesComponent implements OnInit {
+export class ViewArticlesComponent implements OnInit, OnDestroy {
 
   currentPage: number = 0;
   articlePage: ArticlePage = new ArticlePage();
@@ -19,9 +21,12 @@ export class ViewArticlesComponent implements OnInit {
   searchValue: string = '';
   clickedArticleId: number = undefined;
 
+  private observSubscr: Subscription;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private articleService: ArticleService,
+    private articleObservService: ArticleObservableService,
     private snackBar: MatSnackBar,
     private router: Router
   ) { }
@@ -31,6 +36,21 @@ export class ViewArticlesComponent implements OnInit {
     if (this.router.url.includes('payment-flow')) {
       this.highlightArticle();
     }
+
+    this.observSubscr = this.articleObservService.getArticle().subscribe(
+      data => {
+        this.articlePage.articles.forEach(art => {
+          if (art.id == data.id) {
+            art = data;
+            return;
+          }
+        });
+      },
+      err => {
+        this.snackBar.open(err.error.message);
+      }
+    );
+
   }
 
   highlightArticle(): void {
@@ -96,6 +116,11 @@ export class ViewArticlesComponent implements OnInit {
     this.router.navigate([`payment-flow/${article.id}`], {relativeTo: this.activatedRoute});
   }
 
+  editArticle(articleId: number) {
+    this.articleClicked(articleId);
+    this.router.navigate([`manage-article/${articleId}`], {relativeTo: this.activatedRoute});
+  }
+
   articleClicked(id: number) {
     this.clickedArticleId = id;
   }
@@ -108,6 +133,10 @@ export class ViewArticlesComponent implements OnInit {
   previousPageClicked(): void {
     this.currentPage--;
     this.searchArticles();
+  }
+
+  ngOnDestroy() {
+    this.observSubscr.unsubscribe();
   }
 
 }

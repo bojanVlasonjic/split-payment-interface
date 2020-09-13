@@ -40,4 +40,9 @@ public class Article {
         this.paymentSplits = new ArrayList<>();
         this.user = appUser;
     }
+
+    public void updateValues(ArticleDto articleDto) {
+        this.name = articleDto.getName();
+        this.price = articleDto.getPrice();
+    }
 }

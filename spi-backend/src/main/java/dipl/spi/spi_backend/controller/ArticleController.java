@@ -24,6 +24,7 @@ public class ArticleController {
         return ResponseEntity.ok(articleService.searchArticles(name, pageNum));
     }
 
+
     @GetMapping("/{userId}/{pageNum}")
     public ResponseEntity<List<ArticleDto>> getUserArticles(@PathVariable Long userId,
                                                             @PathVariable int pageNum) {
@@ -32,10 +33,12 @@ public class ArticleController {
 
     }
 
+
     @GetMapping("/{articleId}")
     public ResponseEntity<ArticleDto> getArticle(@PathVariable Long articleId) {
         return ResponseEntity.ok(new ArticleDto(articleService.findById(articleId)));
     }
+
 
     @PostMapping("/{userId}")
     public ResponseEntity<ArticleDto> createArticle(@RequestBody ArticleDto articleDto,
@@ -46,9 +49,18 @@ public class ArticleController {
         );
     }
 
+
+    @PutMapping
+    public ResponseEntity<ArticleDto> updateArticle(@RequestBody ArticleDto articleDto) {
+        return ResponseEntity.ok(articleService.updateArticle(articleDto));
+    }
+
+
     @DeleteMapping("/{articleId}")
     public ResponseEntity<Long> deleteArticle(@PathVariable Long articleId) {
 
         return ResponseEntity.ok(articleService.deleteArticle(articleId));
     }
+
+
 }

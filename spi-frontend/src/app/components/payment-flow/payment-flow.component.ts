@@ -151,12 +151,12 @@ export class PaymentFlowComponent implements OnInit {
     this.pieChartData[0] -= split.amount; // decrease new amount from the remainder price
 
     this.article.paymentSplits[splitIndex] = split;
-    this.pieChartLabels[splitIndex + 1] = split.account.recipientName + '.'; 
+    this.pieChartLabels[splitIndex + 1] = split.account.recipientName + ' '; // hack to ensure chart changes in runtime 
     this.pieChartData[splitIndex + 1] = split.amount; // adding +1 to skip the label indicating the remaining amount
 
     window.setTimeout(() => {
-      this.pieChartLabels[splitIndex + 1] = split.account.recipientName; // to ensure change is displayed
-    }, 100);
+      this.pieChartLabels[splitIndex + 1] = split.account.recipientName; // hack to ensure chart changes in runtime 
+    }, 200);
     
   }
 

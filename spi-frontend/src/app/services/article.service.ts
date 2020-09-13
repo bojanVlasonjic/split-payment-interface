@@ -27,6 +27,10 @@ export class ArticleService {
     return this.http.post(`api/article/${userId}`, article);
   }
 
+  updateArticle(article: Article): Observable<any> {
+    return this.http.put('api/article', article);
+  }
+
   deleteArticle(articleId: number): Observable<any> {
     return this.http.delete( `api/article/${articleId}`);
   }
