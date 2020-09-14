@@ -21,7 +21,8 @@ export class ViewArticlesComponent implements OnInit, OnDestroy {
   searchValue: string = '';
   clickedArticleId: number = undefined;
 
-  private observSubscr: Subscription;
+  windowWidth: number;
+  observSubscr: Subscription;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -32,6 +33,7 @@ export class ViewArticlesComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.windowWidth = window.innerWidth;
     this.searchArticles();
     if (this.router.url.includes('payment-flow')) {
       this.highlightArticle();
