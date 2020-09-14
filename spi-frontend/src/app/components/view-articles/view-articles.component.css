@@ -16,11 +16,15 @@
 }
 
 .card {
-    max-width: 15rem;
+    max-width: 16rem;
+}
+
+.card-body {
+    padding: 1ex !important;
+    margin: 1ex !important;
 }
 
 .remove-icon {
-    float: right;
     font-size: 22px;
     font-weight: bold;
 }
@@ -40,9 +44,23 @@
 .side-nav {
     background-image: url(../../../assets/images/grey_wash_wall.png);
     background-repeat:repeat;
-    min-height: 95vh;
+   
 }
 
 .centered-content {
     text-align: center;
 }
+
+.card-text {
+    line-height: 1;
+}
+
+.btn {
+    font-size: 15px !important;
+}
+
+.btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+

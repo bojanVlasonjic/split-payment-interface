@@ -3,36 +3,36 @@
     <div class="row">
 
         <!-- Side nav -->
-        <div class="col-3 side-nav">
+        <div class="col-md-3 col-sm-12 side-nav">
             <div class="row">
                 
                 <div class="col-12 header">
-                    <h3 class="centered-content white-text"> My articles </h3>
+                    <h4 class="centered-content white-text"> My articles </h4>
                 </div>
 
-                <div class="col-lg-6 col-sm-12 header centered-content white-text">
+                <div class="col-6 header centered-content white-text">
                     Page {{ currentPage+1 }} / {{ articlePage.totalPages }}
                 </div>
 
-                <div class="col-lg-3 col-sm-6 header">
+                <div class="col-3 header">
                     <button type="button" class="btn btn-light full-width" [disabled]="currentPage == 0"
                         (click)="previousPageClicked()">
                         &lt;
                     </button>
                 </div>
-                <div class="col-lg-3 col-sm-6 header">
+                <div class="col-3 header">
                     <button type="button" class="btn btn-light full-width" (click)="nextPageClicked()"
                         [disabled]="articlePage.totalPages - currentPage == 1 || articlePage.articles.length == 0">
                         &gt;
                     </button>
                 </div>
         
-                <div class="form-group col-lg-10 col-sm-12">
+                <div class="form-group col-10">
                     <input type="text" placeholder="Search" class="form-control" (keyup)="performSearch()"
                         [(ngModel)]="searchValue">
                 </div>
-                <div class="col-lg-2 col-sm-12" *ngIf="!requestFinished">
-                    <div class="spinner-border" role="status">
+                <div class="col-2" *ngIf="!requestFinished">
+                    <div class="spinner-border text-primary" role="status">
                     <span class="sr-only">Loading...</span>
                     </div>
                 </div>
@@ -42,33 +42,42 @@
                     <h3 class="centered-content"> No articles have been found </h3>
                 </div> 
 
-                <div class="col-12" *ngFor="let article of articlePage.articles; index as i">
+                <div class="col-md-12 col-sm-6" *ngFor="let article of articlePage.articles; index as i">
                     <div [ngClass]="(clickedArticleId == article.id) ? 'card text-white bg-secondary mb-3 shadow-on' : 'card text-white bg-dark mb-3'">
                         <div class="card-body">
-                            <h5 class="card-title">
-                                {{ article.name }}
-                                <span class="remove-icon" (click)="removeArticle(article, i)">
-                                     &times; 
-                                </span>
-                            </h5>
-                            <p class="card-text"> Price: &nbsp; {{ article.price }} rsd</p>
-
-                            <div class="btn-group" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-info" (click)="configurePaymentFlow(article)">
-                                    Split config
-                                </button>
-                                <button type="button" class="btn btn-primary" (click)="editArticle(article.id)">
-                                    Edit
-                                </button>
-                              </div>
+                            <div class="row justify-content-center">
+                                <div class="col-5">
+                                    <p class="card-text"> {{ article.name }}</p>
+                                </div>
+                                <div class="col-5 centered-content">
+                                    <p class="card-text"> {{ article.price }} rsd</p>
+                                </div>
+                                <div class="col-2">
+                                    <span class="remove-icon" (click)="removeArticle(article, i)">
+                                        &times; 
+                                    </span>
+                                </div>
+                    
+                                <div class="col-10">
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                                        <button type="button" class="btn btn-info" (click)="configurePaymentFlow(article)">
+                                            Split config.
+                                        </button>
+                                        <button type="button" class="btn btn-primary" (click)="editArticle(article.id)">
+                                            Edit
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    </div> 
+                </div> 
+
             </div>
         </div>
 
         <!-- Main content-->
-        <div class="col-9">
+        <div class="col-md-9 col-sm-12">
             <router-outlet></router-outlet>
         </div>
     </div>
