@@ -13,8 +13,12 @@
         </div>
 
         <div class="col-md-6">
-            <h4 class="option-header">Insert new split</h4>
-            <app-manage-split [article]="article" (createSplitEvent)="addNewSplit($event)"> </app-manage-split>
+            <h4 class="option-header" *ngIf="selectedSplit == null">Insert new split</h4>
+            <h4 class="option-header" *ngIf="selectedSplit != null">Edit split</h4>
+            <app-manage-split [article]="article" [setPaymentSplit]="selectedSplit" 
+                (createSplitEvent)="addNewSplit($event)" (updateSplitEvent)="updatePaymentSplit($event)"
+                (removeSplitEvent)="removePaymentSplit($event)">
+            </app-manage-split>
         </div>
         
     </div>

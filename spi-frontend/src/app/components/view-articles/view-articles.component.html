@@ -32,14 +32,14 @@
                         [(ngModel)]="searchValue">
                 </div>
                 <div class="col-2" *ngIf="!requestFinished">
-                    <div class="spinner-border text-primary" role="status">
+                    <div class="spinner-border text-white" role="status">
                     <span class="sr-only">Loading...</span>
                     </div>
                 </div>
                 
 
                 <div class="col-12" *ngIf="requestFinished && articlePage.articles.length == 0">
-                    <h3 class="centered-content"> No articles have been found </h3>
+                    <h3 class="centered-content white-text"> No articles have been found </h3>
                 </div> 
 
                 <div class="col-md-12 col-sm-6" *ngFor="let article of articlePage.articles; index as i">

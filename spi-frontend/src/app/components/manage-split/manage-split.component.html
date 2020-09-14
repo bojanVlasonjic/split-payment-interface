@@ -103,20 +103,26 @@
     </div> 
     
     <div class="row">
-        <div class="col-7">
+        <div [ngClass]="isUpdating ? 'col-8' : 'col-6'">
             <label class="highlighted-text">
-                Transfer amount: &nbsp;  <b> {{ paymentSplit.amount }} rsd </b>
+                Amount: &nbsp;  <b> {{ paymentSplit.amount }} rsd </b>
             </label>
         </div>
 
-        <div class="col-5">
-            <button type="submit" class="btn btn-dark full-width" *ngIf="!isUpdating" (click)="createPaymentSplit()"
+        <div class="col-6">
+            <button type="submit" class="btn btn-light full-width" *ngIf="!isUpdating" (click)="createPaymentSplit()"
                 [disabled]="!splitForm.form.valid || accountNumControl.errors">
                  Add split
             </button>
             <button type="submit" class="btn btn-dark full-width" *ngIf="isUpdating" (click)="updatePaymentSplit()"
                 [disabled]="!splitForm.form.valid || accountNumControl.errors">
                 Update split
+            </button>
+        </div>
+
+        <div class="col-6" *ngIf="isUpdating">
+            <button class="btn btn-danger full-width" (click)="removePaymentSplit()">
+                Remove split
             </button>
         </div>
     </div>

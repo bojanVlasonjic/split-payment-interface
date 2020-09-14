@@ -16,7 +16,6 @@ import { MatSnackBar } from '@angular/material';
 })
 export class ManageSplitComponent implements OnInit, OnDestroy {
 
-  //paymentSplit: PaymentSplit = new PaymentSplit();
   accountNumControl: FormControl = new FormControl('', [Validators.required]);
   splitType: string = '';
   investmentPercentage: number = 0;
@@ -29,8 +28,9 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
 
   @Output() createSplitEvent = new EventEmitter<PaymentSplit>();
   @Output() updateSplitEvent = new EventEmitter<PaymentSplit>();
+  @Output() removeSplitEvent = new EventEmitter<PaymentSplit>();
   @Input() article: Article;
-  @Input() paymentSplit: PaymentSplit;
+  paymentSplit: PaymentSplit;
 
   @ViewChild("splitForm", {static: false}) splitForm: any;
 
@@ -40,18 +40,28 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar
     ) { }
 
-  ngOnInit() {
-    this.getUserAccounts();
-    this.initAutocompleteFilter();
+  @Input() set setPaymentSplit(value: PaymentSplit) {
 
-    if(this.paymentSplit == null) {
-      this.paymentSplit = new PaymentSplit();
+    if(value == null) {
+      if(this.splitForm != null) {
+        this.resetForm();
+      } else {
+        this.paymentSplit = new PaymentSplit();
+      }
       this.isUpdating = false;
+      this.accountNumControl.enable();
     } else {
+      this.paymentSplit = value;
       this.accountNumControl.setValue(this.paymentSplit.account.number);
       this.isUpdating = true;
       this.accountNumControl.disable();
     }
+
+  }
+
+  ngOnInit() {
+    this.getUserAccounts();
+    this.initAutocompleteFilter();
     
     // update user accounts
     this.accObservSubscription = this.accObservService.getAccount().subscribe(
@@ -73,6 +83,7 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
 
   resetForm(): void {
     this.accountNumControl.reset();
+    this.accountNumControl.enable();
     this.splitForm.reset();
     this.splitForm.submitted = false;
     this.splitType = '';
@@ -113,6 +124,12 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
     if(this.paymentSplit.amount != null && this.paymentSplit.amount > 0) {
       this.paymentSplit.account.number = this.accountNumControl.value;
       this.updateSplitEvent.emit(this.paymentSplit);
+    }
+  }
+
+  removePaymentSplit(): void {
+    if (window.confirm(`Are you sure you want to remove payment split to ${this.paymentSplit.account.recipientName}?`)) {
+      this.removeSplitEvent.emit(this.paymentSplit);
     }
   }
 
