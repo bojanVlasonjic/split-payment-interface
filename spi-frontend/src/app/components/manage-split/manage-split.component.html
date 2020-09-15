@@ -111,11 +111,11 @@
 
         <div class="col-6">
             <button type="submit" class="btn btn-light full-width" *ngIf="!isUpdating" (click)="createPaymentSplit()"
-                [disabled]="!splitForm.form.valid || accountNumControl.errors">
+                [disabled]="!splitForm.form.valid || accountNumControl.errors" [ngStyle]="{'background-color': paymentSplit.color}">
                  Add split
             </button>
-            <button type="submit" class="btn btn-dark full-width" *ngIf="isUpdating" (click)="updatePaymentSplit()"
-                [disabled]="!splitForm.form.valid || accountNumControl.errors">
+            <button type="submit" class="btn btn-light full-width" *ngIf="isUpdating" (click)="updatePaymentSplit()"
+                [disabled]="!splitForm.form.valid || accountNumControl.errors" [ngStyle]="{'background-color': paymentSplit.color}">
                 Update split
             </button>
         </div>

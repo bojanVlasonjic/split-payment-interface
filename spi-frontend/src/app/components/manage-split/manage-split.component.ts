@@ -29,7 +29,9 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
   @Output() createSplitEvent = new EventEmitter<PaymentSplit>();
   @Output() updateSplitEvent = new EventEmitter<PaymentSplit>();
   @Output() removeSplitEvent = new EventEmitter<PaymentSplit>();
+
   @Input() article: Article;
+
   paymentSplit: PaymentSplit;
 
   @ViewChild("splitForm", {static: false}) splitForm: any;
@@ -49,6 +51,7 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
         this.paymentSplit = new PaymentSplit();
       }
       this.isUpdating = false;
+      this.paymentSplit.color = this.generateRandomColor();
       this.accountNumControl.enable();
     } else {
       this.paymentSplit = value;
@@ -76,7 +79,7 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
         } else {
           this.resetForm();
         }
-        
+        this.paymentSplit.color = this.generateRandomColor();
       }
     );
   }
@@ -169,6 +172,10 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
       }
     }
     return -1;
+  }
+
+  generateRandomColor(): string {
+    return `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 1)`;
   }
 
   ngOnDestroy() {

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Article } from 'src/app/data/article';
 import { PaymentSplit } from 'src/app/data/payment-split';
-import { MatSnackBar, MatDialog, MatDialogRef } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from 'src/app/services/article.service';
 import { PaymentSplitService } from 'src/app/services/payment-split.service';
@@ -94,6 +94,7 @@ export class PaymentFlowComponent implements OnInit {
     paySplit.articleId = this.article.id;
     this.paymentSplitService.createPaymentSplit(paySplit).subscribe(
       data => {
+        data.color = paySplit.color; 
         this.insertSplitInChart(data, true);
         this.accObservService.sendAccount(data.account);
       },
@@ -107,11 +108,18 @@ export class PaymentFlowComponent implements OnInit {
     this.pieChartData[0] -= split.amount;
     this.pieChartLabels.push(split.account.recipientName);
     this.pieChartData.push(split.amount);
-    this.labelColors[0].backgroundColor.push(this.generateRandomColor());
 
-    if(isNew) {
+    let colorToDisplay: string;
+    if(isNew) { // the article has just been created
       this.article.paymentSplits.push(split);
+      colorToDisplay = split.color;
+    } else { // the article exists and is being loaded
+      colorToDisplay = this.generateRandomColor();
+      split.color = colorToDisplay;
     }
+
+    this.labelColors[0].backgroundColor.push(colorToDisplay);
+
 }
 
   updatePaymentSplit(paySplit: PaymentSplit) {
@@ -167,6 +175,7 @@ export class PaymentFlowComponent implements OnInit {
     this.article.paymentSplits.splice(splitIndex, 1);
     this.pieChartLabels.splice(splitIndex + 1, 1); // adding +1 to skip the label indicating the remaining amount
     this.pieChartData.splice(splitIndex + 1, 1);
+    this.labelColors[0].backgroundColor.splice(splitIndex + 1, 1);
   }
 
   isAccountAdded(accountNum: string): boolean {
@@ -180,8 +189,7 @@ export class PaymentFlowComponent implements OnInit {
   }
 
   generateRandomColor(): string {
-    return `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)},
-      ${Math.floor(Math.random() * 256)}, 1)`;
+    return `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 1)`;
   }
 
   chartClicked(event: any) {
@@ -194,6 +202,7 @@ export class PaymentFlowComponent implements OnInit {
           let paySplit = new PaymentSplit();
           paySplit.splitIndex =  clickedElementIndex - 1; // remaining amount is at index 0, so I add -1
           paySplit.updateValues(this.article.paymentSplits[clickedElementIndex-1]); // edit split option
+          paySplit.color = this.labelColors[0].backgroundColor[clickedElementIndex];
           this.selectedSplit = paySplit;
         } else {
           this.selectedSplit = null; // add new split option
