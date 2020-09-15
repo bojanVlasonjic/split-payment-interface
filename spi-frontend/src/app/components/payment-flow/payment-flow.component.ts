@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from 'src/app/services/article.service';
 import { PaymentSplitService } from 'src/app/services/payment-split.service';
 import { AccountObservableService } from 'src/app/services/account-observable.service';
+import { SplitColor } from 'src/app/data/split-color';
 
 @Component({
   selector: 'app-payment-flow',
@@ -94,7 +95,7 @@ export class PaymentFlowComponent implements OnInit {
     paySplit.articleId = this.article.id;
     this.paymentSplitService.createPaymentSplit(paySplit).subscribe(
       data => {
-        data.color = paySplit.color; 
+        data.splitColor = paySplit.splitColor; 
         this.insertSplitInChart(data, true);
         this.accObservService.sendAccount(data.account);
       },
@@ -109,16 +110,16 @@ export class PaymentFlowComponent implements OnInit {
     this.pieChartLabels.push(split.account.recipientName);
     this.pieChartData.push(split.amount);
 
-    let colorToDisplay: string;
+    let colorsToDisplay : SplitColor;
     if(isNew) { // the article has just been created
       this.article.paymentSplits.push(split);
-      colorToDisplay = split.color;
+      colorsToDisplay = split.splitColor;
     } else { // the article exists and is being loaded
-      colorToDisplay = this.generateRandomColor();
-      split.color = colorToDisplay;
+      colorsToDisplay = this.generateSplitColors();
+      split.splitColor = colorsToDisplay;
     }
 
-    this.labelColors[0].backgroundColor.push(colorToDisplay);
+    this.labelColors[0].backgroundColor.push(colorsToDisplay.backgroundColor);
 
 }
 
@@ -188,8 +189,25 @@ export class PaymentFlowComponent implements OnInit {
     return isAdded;
   }
 
-  generateRandomColor(): string {
-    return `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 1)`;
+  generateSplitColors(): SplitColor {
+
+    let splitColor = new SplitColor();
+
+    const red = Math.floor(Math.random() * 256);
+    const green = Math.floor(Math.random() * 256);
+    const blue = Math.floor(Math.random() * 256);
+
+    splitColor.backgroundColor = `rgba(${red}, ${green}, ${blue}, 1)`;
+
+    // determine whether text color should be black or white
+    if ((red*0.299 + green*0.587 + blue*0.114) > 127) {
+      splitColor.textColor = 'black';
+    } else{
+      splitColor.textColor = 'white';
+    }
+
+    return splitColor;
+
   }
 
   chartClicked(event: any) {
@@ -202,7 +220,6 @@ export class PaymentFlowComponent implements OnInit {
           let paySplit = new PaymentSplit();
           paySplit.splitIndex =  clickedElementIndex - 1; // remaining amount is at index 0, so I add -1
           paySplit.updateValues(this.article.paymentSplits[clickedElementIndex-1]); // edit split option
-          paySplit.color = this.labelColors[0].backgroundColor[clickedElementIndex];
           this.selectedSplit = paySplit;
         } else {
           this.selectedSplit = null; // add new split option

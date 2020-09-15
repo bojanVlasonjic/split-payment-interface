@@ -1,4 +1,5 @@
 import { Account } from './account';
+import { SplitColor } from './split-color';
 
 export class PaymentSplit {
 
@@ -10,10 +11,11 @@ export class PaymentSplit {
 
     // additional data
     splitIndex: number;
-    color: string;
+    splitColor: SplitColor;
 
     constructor() {
         this.account = new Account();
+        this.splitColor = new SplitColor();
         this.amount = 0;
         this.splitIndex = -1;
     }
@@ -23,6 +25,7 @@ export class PaymentSplit {
         this.articleId = paySplit.articleId;
         this.amount = paySplit.amount;
 
+        this.splitColor.updateValues(paySplit.splitColor);
         this.account.updateValues(paySplit.account);
     }
 }

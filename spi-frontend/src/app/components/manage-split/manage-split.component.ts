@@ -8,6 +8,7 @@ import { Article } from 'src/app/data/article';
 import { FormControl, Validators } from '@angular/forms';
 import { AccountObservableService } from 'src/app/services/account-observable.service';
 import { MatSnackBar } from '@angular/material';
+import { SplitColor } from 'src/app/data/split-color';
 
 @Component({
   selector: 'app-manage-split',
@@ -51,7 +52,7 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
         this.paymentSplit = new PaymentSplit();
       }
       this.isUpdating = false;
-      this.paymentSplit.color = this.generateRandomColor();
+      this.paymentSplit.splitColor = this.generateSplitColors();
       this.accountNumControl.enable();
     } else {
       this.paymentSplit = value;
@@ -79,7 +80,7 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
         } else {
           this.resetForm();
         }
-        this.paymentSplit.color = this.generateRandomColor();
+        this.paymentSplit.splitColor = this.generateSplitColors();
       }
     );
   }
@@ -174,8 +175,32 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
     return -1;
   }
 
-  generateRandomColor(): string {
-    return `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 1)`;
+  generateSplitColors(): SplitColor {
+
+    let splitColor = new SplitColor();
+
+    const red = Math.floor(Math.random() * 256);
+    const green = Math.floor(Math.random() * 256);
+    const blue = Math.floor(Math.random() * 256);
+
+    splitColor.backgroundColor = `rgba(${red}, ${green}, ${blue}, 1)`;
+
+    // determine whether text color should be black or white
+    if ((red*0.299 + green*0.587 + blue*0.114) > 127) {
+      splitColor.textColor = 'black';
+    } else{
+      splitColor.textColor = 'white';
+    }
+
+    return splitColor;
+
+  }
+
+  buttonColorStyle(): Object {
+    return {
+      'backgroundColor': 'red',
+      'color': 'blue'
+    };
   }
 
   ngOnDestroy() {
