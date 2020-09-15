@@ -41,15 +41,15 @@ export class ViewArticlesComponent implements OnInit, OnDestroy {
 
     this.observSubscr = this.articleObservService.getArticle().subscribe(
       data => {
-        this.articlePage.articles.forEach(art => {
-          if (art.id == data.id) {
-            art = data;
-            return;
+        for (let i = 0; i < this.articlePage.articles.length; i++) {
+          if (this.articlePage.articles[i].id == data.id) {
+            this.articlePage.articles[i] = data;
+            break;
           }
-        });
+        }
       },
       err => {
-        this.snackBar.open(err.error.message);
+        this.displayError(err);
       }
     );
 
@@ -62,7 +62,7 @@ export class ViewArticlesComponent implements OnInit, OnDestroy {
   }
 
   displayError(err: any): void {
-    if (err.error.message != null) {
+    if (err.error.message != null && err.error.message != '') {
       this.snackBar.open(err.error.message);
     } else {
       this.snackBar.open(err.message);
@@ -103,7 +103,7 @@ export class ViewArticlesComponent implements OnInit, OnDestroy {
         }
       },
       err => {
-        this.snackBar.open(err.error.message);
+        this.displayError(err);
       }
     )
   }

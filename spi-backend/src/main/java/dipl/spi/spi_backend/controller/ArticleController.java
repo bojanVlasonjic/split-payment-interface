@@ -25,26 +25,16 @@ public class ArticleController {
     }
 
 
-    @GetMapping("/{userId}/{pageNum}")
-    public ResponseEntity<List<ArticleDto>> getUserArticles(@PathVariable Long userId,
-                                                            @PathVariable int pageNum) {
-
-        return ResponseEntity.ok(articleService.getUserArticles(userId, pageNum));
-
-    }
-
-
     @GetMapping("/{articleId}")
     public ResponseEntity<ArticleDto> getArticle(@PathVariable Long articleId) {
         return ResponseEntity.ok(new ArticleDto(articleService.findById(articleId)));
     }
 
 
-    @PostMapping("/{userId}")
-    public ResponseEntity<ArticleDto> createArticle(@RequestBody ArticleDto articleDto,
-                                                    @PathVariable Long userId) {
+    @PostMapping
+    public ResponseEntity<ArticleDto> createArticle(@RequestBody ArticleDto articleDto) {
         return new ResponseEntity<>(
-                articleService.createArticle(articleDto, userId),
+                articleService.createArticle(articleDto),
                 HttpStatus.CREATED
         );
     }

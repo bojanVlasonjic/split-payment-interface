@@ -63,7 +63,7 @@ export class PaymentFlowComponent implements OnInit {
         });
       },
       err => {
-        this.snackBar.open(err.error.message);
+        this.displayError(err);
         this.router.navigate(['/home']);
       }
     );
@@ -100,7 +100,7 @@ export class PaymentFlowComponent implements OnInit {
         this.accObservService.sendAccount(data.account);
       },
       err => {
-        this.snackBar.open(err.error.message);
+        this.displayError(err);
       }
     );
   }
@@ -137,7 +137,7 @@ export class PaymentFlowComponent implements OnInit {
         this.snackBar.open('Payment split successfully updated');
       },
       err => {
-        this.snackBar.open(err.error.message);
+        this.displayError(err);
       }
     );
   }
@@ -164,7 +164,7 @@ export class PaymentFlowComponent implements OnInit {
         this.selectedSplit = null;
       },
       err => {
-        this.snackBar.open(err.error.message);
+        this.displayError(err);
       }
     );
 
@@ -225,6 +225,14 @@ export class PaymentFlowComponent implements OnInit {
           this.selectedSplit = null; // add new split option
         }
       }
+    }
+  }
+
+  displayError(err: any): void {
+    if (err.error.message != null && err.error.message != '') {
+      this.snackBar.open(err.error.message);
+    } else {
+      this.snackBar.open(err.message);
     }
   }
 

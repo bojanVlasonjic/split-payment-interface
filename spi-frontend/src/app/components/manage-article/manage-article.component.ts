@@ -4,6 +4,7 @@ import { ArticleService } from 'src/app/services/article.service';
 import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleObservableService } from 'src/app/services/article-observable.service';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
   selector: 'app-manage-article',
@@ -17,6 +18,7 @@ export class ManageArticleComponent implements OnInit {
   @ViewChild("articleForm", {static: false}) articleForm: any;
 
   constructor(
+    private authService: AuthenticationService,
     private articleService: ArticleService,
     private articleObservService: ArticleObservableService,
     private snackBar: MatSnackBar,
@@ -32,13 +34,14 @@ export class ManageArticleComponent implements OnInit {
           this.isEditing = true;
         } else {
           this.isEditing = false;
+          this.article.userId = this.authService.getAuthenticatedUser();
         }
       }
     );
   }
 
   createArticle(): void {
-    this.articleService.createArticle(this.article, -1).subscribe(
+    this.articleService.createArticle(this.article).subscribe(
       data => {
         this.snackBar.open('Article successfully saved');
         this.articleForm.reset();
@@ -75,7 +78,7 @@ export class ManageArticleComponent implements OnInit {
 
 
   displayError(err: any): void {
-    if (err.error.message != null) {
+    if (err.error.message != null && err.error.message != '') {
       this.snackBar.open(err.error.message);
     } else {
       this.snackBar.open(err.message);

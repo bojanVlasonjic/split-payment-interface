@@ -9,6 +9,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { AccountObservableService } from 'src/app/services/account-observable.service';
 import { MatSnackBar } from '@angular/material';
 import { SplitColor } from 'src/app/data/split-color';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
   selector: 'app-manage-split',
@@ -38,6 +39,7 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
   @ViewChild("splitForm", {static: false}) splitForm: any;
 
   constructor(
+    private authService: AuthenticationService,
     private accountService: AccountService,
     private accObservService: AccountObservableService,
     private snackBar: MatSnackBar
@@ -103,12 +105,12 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
   }
 
   getUserAccounts(): void {
-    this.accountService.getUserAccounts(-1).subscribe(
+    this.accountService.getUserAccounts(this.authService.getAuthenticatedUser()).subscribe(
       data => {
         this.userAccounts = data;
       },
       err => {
-        this.snackBar.open('Failed to find your added accounts. Please refresh the page and try again');
+        this.displayError(err);
       }
     );
   }
@@ -201,6 +203,14 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
       'backgroundColor': 'red',
       'color': 'blue'
     };
+  }
+
+  displayError(err: any): void {
+    if (err.error.message != null && err.error.message != '') {
+      this.snackBar.open(err.error.message);
+    } else {
+      this.snackBar.open(err.message);
+    }
   }
 
   ngOnDestroy() {

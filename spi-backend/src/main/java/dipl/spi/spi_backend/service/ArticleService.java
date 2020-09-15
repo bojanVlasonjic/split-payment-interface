@@ -32,8 +32,6 @@ public class ArticleService {
 
     public ArticlePageDto searchArticles(String name, int pageNum) {
 
-        // TODO: get user id
-
         if(pageNum < 0) {
             throw new ApiBadRequestException("Invalid page number");
         }
@@ -43,21 +41,6 @@ public class ArticleService {
 
         return new ArticlePageDto(articlePage);
 
-    }
-
-    public List<ArticleDto> getUserArticles(Long userId, int pageNum) {
-
-        if(pageNum < 0) {
-            throw new ApiBadRequestException("Invalid page number");
-        }
-
-        Pageable pageable = PageRequest.of(pageNum, elementsPerPage);
-
-        return articleRepository
-                .findByUserIdOrderByNameAsc(userId, pageable)
-                .stream()
-                .map(ArticleDto::new)
-                .collect(Collectors.toList());
     }
 
 
@@ -70,9 +53,9 @@ public class ArticleService {
     }
 
 
-    public ArticleDto createArticle(ArticleDto articleDto, Long userId) {
+    public ArticleDto createArticle(ArticleDto articleDto) {
 
-        AppUser user = userService.findUserById(userId);
+        AppUser user = userService.findUserById(articleDto.getUserId());
         Article article = new Article(articleDto, user);
 
         try {
