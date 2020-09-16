@@ -1,40 +1,42 @@
-<div class="row justify-content-md-center">
-    <div class="col-md-8 col-sm-10">
-        
-        <h3 class="heading"> New article </h3>
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-md-8 col-sm-10">
+            
+            <h3 class="heading"> New article </h3>
 
-        <form #articleForm="ngForm">
-            <div class="form-group">
-                <label>Article name: </label>
-                <input [(ngModel)]="article.name" class="form-control" name="articleName" id="articleName"
-                    required #articleName="ngModel" autocomplete="off" type="text">
-                <small [hidden]="articleName.valid || articleName.pristine" class="error-message">
-                    Article name is required
-                </small> 
-            </div>
+            <form #articleForm="ngForm">
+                <div class="form-group">
+                    <label>Article name: </label>
+                    <input [(ngModel)]="article.name" class="form-control" name="articleName" id="articleName"
+                        required #articleName="ngModel" autocomplete="off" type="text">
+                    <small [hidden]="articleName.valid || articleName.pristine" class="error-message">
+                        Article name is required
+                    </small> 
+                </div>
 
-            <div class="form-group">
-                <label>Article price: </label>
-                <input [(ngModel)]="article.price" class="form-control" name="articlePrice" id="articlePrice"
-                    required min="0" #articlePrice="ngModel" autocomplete="off" type="number">
-                <small [hidden]="articlePrice.valid || articlePrice.pristine" class="error-message">
-                    Article price is required
-                </small>
-                <br/> 
-                <small *ngIf="articlePrice.touched && article.price <= 0" class="error-message">
-                    Article price must be > 0
-                </small> 
-            </div>
+                <div class="form-group">
+                    <label>Article price: </label>
+                    <input [(ngModel)]="article.price" class="form-control" name="articlePrice" id="articlePrice"
+                        required min="0" #articlePrice="ngModel" autocomplete="off" type="number">
+                    <small [hidden]="articlePrice.valid || articlePrice.pristine" class="error-message">
+                        Article price is required
+                    </small>
+                    <br/> 
+                    <small *ngIf="articlePrice.touched && article.price <= 0" class="error-message">
+                        Article price must be > 0
+                    </small> 
+                </div>
 
-            <button type="submit" class="btn btn-dark" (click)="createArticle()"  *ngIf="!isEditing"
-                [disabled]="!articleForm.form.valid || article.price <= 0">
-                Add article
-            </button>
+                <button type="submit" class="btn btn-dark" (click)="createArticle()"  *ngIf="!isEditing"
+                    [disabled]="!articleForm.form.valid || article.price <= 0">
+                    Add article
+                </button>
 
-            <button type="submit" class="btn btn-dark" (click)="updateArticle()"  *ngIf="isEditing"
-                [disabled]="!articleForm.form.valid || article.price <= 0">
-                Update article
-            </button>
-        </form>
+                <button type="submit" class="btn btn-dark" (click)="updateArticle()"  *ngIf="isEditing"
+                    [disabled]="!articleForm.form.valid || article.price <= 0">
+                    Update article
+                </button>
+            </form>
+        </div>
     </div>
 </div>

@@ -44,6 +44,7 @@
 .side-nav {
     background-image: url(../../../assets/images/grey_wash_wall.png);
     background-repeat:repeat;
+    min-height: 95vh;
 }
 
 .centered-content {
@@ -62,8 +63,3 @@
     outline: none;
     box-shadow: none;
 }
-
-.full-height {
-    min-height: 95vh;
-}
-
