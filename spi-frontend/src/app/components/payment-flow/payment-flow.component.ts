@@ -39,6 +39,7 @@ export class PaymentFlowComponent implements OnInit {
     this.route.params.subscribe(
       params => {
         this.getArticle(params['id']);
+        console.log(this.labelColors[0].backgroundColor);
       }
     );
   }
@@ -70,9 +71,9 @@ export class PaymentFlowComponent implements OnInit {
   }
 
   insertRemainderIntoChart(): void {
-    this.pieChartLabels.push('Remaining amount');
+    this.pieChartLabels.push('My share');
     this.pieChartData.push(this.article.price);
-    this.labelColors[0].backgroundColor.push('rgba(169, 169, 169, 1');
+    this.labelColors[0].backgroundColor.push('rgb(76, 138, 76, 1)');
   }
 
   addNewSplit($paySplit: PaymentSplit): void {
