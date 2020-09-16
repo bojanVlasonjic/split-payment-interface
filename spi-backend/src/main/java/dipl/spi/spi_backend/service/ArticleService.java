@@ -1,14 +1,14 @@
 package dipl.spi.spi_backend.service;
 
 import dipl.spi.spi_backend.dto.ArticleDto;
+import dipl.spi.spi_backend.dto.ArticlePageDto;
 import dipl.spi.spi_backend.exception.ApiBadRequestException;
 import dipl.spi.spi_backend.exception.ApiNotFoundException;
 import dipl.spi.spi_backend.model.AppUser;
 import dipl.spi.spi_backend.model.Article;
 import dipl.spi.spi_backend.repository.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,22 +24,23 @@ public class ArticleService {
     @Autowired
     private AppUserService userService;
 
-    private static final int elementsPerPage = 6;
+    @Autowired
+    private PaymentSplitService paymentSplitService;
+
+    private static final int elementsPerPage = 5;
 
 
-    public List<ArticleDto> getUserArticles(Long userId, int pageNum) {
+    public ArticlePageDto searchArticles(String name, int pageNum) {
 
         if(pageNum < 0) {
             throw new ApiBadRequestException("Invalid page number");
         }
 
-        Pageable pageable = PageRequest.of(pageNum, elementsPerPage);
+        Pageable pageable = PageRequest.of(pageNum, elementsPerPage, Sort.by("name").ascending());
+        Page<Article> articlePage = articleRepository.findByUserIdAndNameContaining(-1L, name ,pageable);
 
-        return articleRepository
-                .findByUserId(userId, pageable)
-                .stream()
-                .map(ArticleDto::new)
-                .collect(Collectors.toList());
+        return new ArticlePageDto(articlePage);
+
     }
 
 
@@ -52,9 +53,9 @@ public class ArticleService {
     }
 
 
-    public ArticleDto createArticle(ArticleDto articleDto, Long userId) {
+    public ArticleDto createArticle(ArticleDto articleDto) {
 
-        AppUser user = userService.findUserById(userId);
+        AppUser user = userService.findUserById(articleDto.getUserId());
         Article article = new Article(articleDto, user);
 
         try {
@@ -64,5 +65,38 @@ public class ArticleService {
             throw new ApiBadRequestException("Failed to save article. Please refresh the page and try again");
         }
 
+    }
+
+    public ArticleDto updateArticle(ArticleDto articleDto) {
+
+        if(articleDto.getId() != null) {
+            Article article = this.findById(articleDto.getId());
+
+            if(articleDto.getPrice() < article.getPrice() &&
+                    paymentSplitService.getPaymentSplitsForArticle(article.getId()).size() > 0) {
+                throw new ApiBadRequestException("Can't decrease price for article with payment splits");
+            }
+
+            article.updateValues(articleDto);
+            articleRepository.save(article);
+        } else {
+            throw new ApiBadRequestException("Invalid article id");
+        }
+
+        return articleDto;
+    }
+
+    public Long deleteArticle(Long articleId) {
+
+        Article article = this.findById(articleId);
+
+        try {
+            articleRepository.delete(article);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ApiBadRequestException("Failed to delete article. Please refresh the page and try again");
+        }
+
+        return article.getId();
     }
 }

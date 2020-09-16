@@ -1,29 +1,30 @@
-.centered-content {
-    padding: 2ex;
-    text-align: center;
+.header {
+    padding: 1ex;
+}
+
+.white-text {
+    color: white;
 }
 
 .spinner {
     padding: 2ex;
     margin-top: 2ex;
-
 }
 
-.identifier {
-    border-bottom: 1px solid black;
-    padding: 1ex;
-}
-
-.value {
-    padding: 1ex;
+.full-width {
+    width: 100%;
 }
 
 .card {
-    max-width: 18rem;
+    max-width: 16rem;
+}
+
+.card-body {
+    padding: 1ex !important;
+    margin: 1ex !important;
 }
 
 .remove-icon {
-    float: right;
     font-size: 22px;
     font-weight: bold;
 }
@@ -34,10 +35,35 @@
     font-weight: 1000;
 }
 
-.left-btn {
-    float: left;
+.shadow-on {
+    -webkit-box-shadow: 0px -1px 42px 9px rgba(0,0,0,0.69);
+    -moz-box-shadow: 0px -1px 42px 9px rgba(0,0,0,0.69);
+    box-shadow: 0px -1px 42px 9px rgba(0,0,0,0.69);
 }
 
-.right-btn {
-    float: right;
+.side-nav {
+    background-image: url(../../../assets/images/grey_wash_wall.png);
+    background-repeat:repeat;
 }
+
+.centered-content {
+    text-align: center;
+}
+
+.card-text {
+    line-height: 1;
+}
+
+.btn {
+    font-size: 15px !important;
+}
+
+.btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.full-height {
+    min-height: 95vh;
+}
+

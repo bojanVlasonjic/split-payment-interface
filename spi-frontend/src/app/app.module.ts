@@ -15,10 +15,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatInputModule } from '@angular/material';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/material/snack-bar';
-import { ConfigureSplitDialogComponent } from './components/configure-split-dialog/configure-split-dialog.component';
 import {MatRadioModule} from '@angular/material/radio';
 import { HomeComponent } from './components/home/home.component';
 import { ManageSplitComponent } from './components/manage-split/manage-split.component';
+import {MatSidenavModule} from '@angular/material/sidenav';
 
 @NgModule({
   declarations: [
@@ -26,7 +26,6 @@ import { ManageSplitComponent } from './components/manage-split/manage-split.com
     ManageArticleComponent,
     ViewArticlesComponent,
     PaymentFlowComponent,
-    ConfigureSplitDialogComponent,
     HomeComponent,
     ManageSplitComponent
   ],
@@ -44,15 +43,16 @@ import { ManageSplitComponent } from './components/manage-split/manage-split.com
     MatInputModule,
     MatSnackBarModule,
     MatDialogModule,
-    MatRadioModule
+    MatRadioModule,
+    MatSidenavModule
+    
   ],
   providers: [
     {
     provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
-    useValue: {duration: 2500}
+    useValue: {duration: 4000}
     }
   ],
-  entryComponents: [ConfigureSplitDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

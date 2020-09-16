@@ -1,13 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Article } from 'src/app/data/article';
 import { PaymentSplit } from 'src/app/data/payment-split';
-import { MatSnackBar, MatDialog, MatDialogRef } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from 'src/app/services/article.service';
 import { PaymentSplitService } from 'src/app/services/payment-split.service';
 import { AccountObservableService } from 'src/app/services/account-observable.service';
-import { ConfigureSplitDialogComponent } from '../configure-split-dialog/configure-split-dialog.component';
-import { SplitDialogData } from 'src/app/data/split-dialog-data';
+import { SplitColor } from 'src/app/data/split-color';
 
 @Component({
   selector: 'app-payment-flow',
@@ -24,9 +23,7 @@ export class PaymentFlowComponent implements OnInit {
   chartOptions: any = { maintainAspectRatio: false, responsive: true };
 
   article: Article;
-  paymentSplits: Array<PaymentSplit>;
-
-  dialogRef: MatDialogRef<ConfigureSplitDialogComponent>;
+  selectedSplit: PaymentSplit = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -34,42 +31,49 @@ export class PaymentFlowComponent implements OnInit {
     private snackBar: MatSnackBar,
     private articleService: ArticleService,
     private paymentSplitService: PaymentSplitService,
-    private accObservService: AccountObservableService,
-    private dialog: MatDialog
+    private accObservService: AccountObservableService
     ) {
   }
 
   ngOnInit() {
-    this.paymentSplits = [];
-    this.article = new Article();
-    
     this.route.params.subscribe(
       params => {
         this.getArticle(params['id']);
+        console.log(this.labelColors[0].backgroundColor);
       }
     );
   }
 
+  resetChart(): void {
+    this.pieChartData = [];
+    this.pieChartLabels = [];
+    this.labelColors = [{backgroundColor: []}];
+  }
+
   getArticle(articleId: number) {
+    this.accObservService.resetForm();
+    this.selectedSplit = null;
+
     this.articleService.getArticleById(articleId).subscribe(
       data => {
         this.article = data;
+        this.resetChart();
         this.insertRemainderIntoChart();
         this.article.paymentSplits.forEach(split => {
-          this.insertSplitInChart(split);
+          this.insertSplitInChart(split, false);
         });
       },
       err => {
-        this.snackBar.open(err.error.message);
+        this.displayError(err);
         this.router.navigate(['/home']);
       }
     );
   }
 
   insertRemainderIntoChart(): void {
-    this.pieChartLabels.push('Remaining amount');
+    this.pieChartLabels.push('My share');
     this.pieChartData.push(this.article.price);
-    this.labelColors[0].backgroundColor.push('rgba(169, 169, 169, 1');
+    this.labelColors[0].backgroundColor.push('rgb(76, 138, 76, 1)');
   }
 
   addNewSplit($paySplit: PaymentSplit): void {
@@ -79,11 +83,8 @@ export class PaymentFlowComponent implements OnInit {
       return;
     }
 
-    if(!this.isSplitAdded($paySplit.account.number)) {
+    if(!this.isAccountAdded($paySplit.account.number)) {
       this.createPaymentSplit($paySplit);
-      setTimeout(() => {
-        window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
-      }, 100)
     } else {
       this.snackBar.open(`Account with number ${$paySplit.account.number} has already been added`);
     }
@@ -95,43 +96,76 @@ export class PaymentFlowComponent implements OnInit {
     paySplit.articleId = this.article.id;
     this.paymentSplitService.createPaymentSplit(paySplit).subscribe(
       data => {
-        this.insertSplitInChart(data);
+        data.splitColor = paySplit.splitColor; 
+        this.insertSplitInChart(data, true);
         this.accObservService.sendAccount(data.account);
       },
       err => {
-        this.snackBar.open(err.error.message);
+        this.displayError(err);
       }
     );
   }
 
-  updatePaymentSplit(dialogData: SplitDialogData) {
+  insertSplitInChart(split: PaymentSplit, isNew: boolean): void {
+    this.pieChartData[0] -= split.amount;
+    this.pieChartLabels.push(split.account.recipientName);
+    this.pieChartData.push(split.amount);
 
-    const currentSplit = this.paymentSplits[dialogData.paySplitIndex];
-    if(this.pieChartData[0] + currentSplit.amount - dialogData.paymentSplit.amount < 0) {
+    let colorsToDisplay : SplitColor;
+    if(isNew) { // the article has just been created
+      this.article.paymentSplits.push(split);
+      colorsToDisplay = split.splitColor;
+    } else { // the article exists and is being loaded
+      colorsToDisplay = this.generateSplitColors();
+      split.splitColor = colorsToDisplay;
+    }
+
+    this.labelColors[0].backgroundColor.push(colorsToDisplay.backgroundColor);
+
+}
+
+  updatePaymentSplit(paySplit: PaymentSplit) {
+
+    const currentSplit = this.article.paymentSplits[paySplit.splitIndex];
+    if(this.pieChartData[0] + currentSplit.amount - paySplit.amount < 0) {
       this.snackBar.open('Insufficient funds');
       return;
     }
 
-    this.paymentSplitService.updatePaymentSplit(dialogData.paymentSplit).subscribe(
+    this.paymentSplitService.updatePaymentSplit(paySplit).subscribe(
       data => {
-        this.accObservService.sendAccount(data);
-        this.updateSplitInChart(data, dialogData.paySplitIndex);
-        this.dialogRef.close();
+        this.updateSplitInChart(data, paySplit.splitIndex);
+        this.snackBar.open('Payment split successfully updated');
       },
       err => {
-        this.snackBar.open(err.error.message);
+        this.displayError(err);
       }
     );
   }
 
-  removePaymentSplit(dialogData: SplitDialogData) {
+  updateSplitInChart(split: PaymentSplit, splitIndex: number): void {
+    this.pieChartData[0] += this.article.paymentSplits[splitIndex].amount; // add old amount to the remainder price
+    this.pieChartData[0] -= split.amount; // decrease new amount from the remainder price
 
-    this.paymentSplitService.removePaymentSplit(dialogData.paymentSplit.id).subscribe(
+    this.article.paymentSplits[splitIndex] = split;
+    this.pieChartLabels[splitIndex + 1] = split.account.recipientName + ' '; // hack to ensure chart changes in runtime 
+    this.pieChartData[splitIndex + 1] = split.amount; // adding +1 to skip the label indicating the remaining amount
+
+    window.setTimeout(() => {
+      this.pieChartLabels[splitIndex + 1] = split.account.recipientName; // hack to ensure chart changes in runtime 
+    }, 200);
+    
+  }
+
+  removePaymentSplit(paySplit: PaymentSplit) {
+
+    this.paymentSplitService.removePaymentSplit(paySplit.id).subscribe(
       data => {
-        this.removeSplitFromChart(dialogData.paymentSplit, dialogData.paySplitIndex);
+        this.removeSplitFromChart(paySplit, paySplit.splitIndex);
+        this.selectedSplit = null;
       },
       err => {
-        this.snackBar.open(err.error.message);
+        this.displayError(err);
       }
     );
 
@@ -140,31 +174,15 @@ export class PaymentFlowComponent implements OnInit {
   removeSplitFromChart(split: PaymentSplit, splitIndex: number) {
     this.pieChartData[0] += split.amount; // add the amount to the remainder
 
-    this.paymentSplits.splice(splitIndex, 1);
+    this.article.paymentSplits.splice(splitIndex, 1);
     this.pieChartLabels.splice(splitIndex + 1, 1); // adding +1 to skip the label indicating the remaining amount
     this.pieChartData.splice(splitIndex + 1, 1);
+    this.labelColors[0].backgroundColor.splice(splitIndex + 1, 1);
   }
 
-  updateSplitInChart(split: PaymentSplit, splitIndex: number): void {
-    this.pieChartData[0] += this.paymentSplits[splitIndex].amount; // add old amount to the remainder price
-    this.pieChartData[0] -= split.amount; // decrease new amount from the remainder price
-
-    this.paymentSplits[splitIndex] = split;
-    this.pieChartLabels[splitIndex + 1] = split.account.recipientName; // adding +1 to skip the label indicating the remaining amount
-    this.pieChartData[splitIndex + 1] = split.amount;
-  }
-
-  insertSplitInChart(split: PaymentSplit): void {
-      this.pieChartData[0] -= split.amount;
-      this.paymentSplits.push(split);
-      this.pieChartLabels.push(split.account.recipientName);
-      this.pieChartData.push(split.amount);
-      this.labelColors[0].backgroundColor.push(this.generateRandomColor());
-  }
-
-  isSplitAdded(accountNum: string): boolean {
+  isAccountAdded(accountNum: string): boolean {
     var isAdded = false;
-    this.paymentSplits.forEach( split => {
+    this.article.paymentSplits.forEach( split => {
       if (split.account.number === accountNum) {
         isAdded = true;
       }
@@ -172,9 +190,25 @@ export class PaymentFlowComponent implements OnInit {
     return isAdded;
   }
 
-  generateRandomColor(): string {
-    return `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)},
-      ${Math.floor(Math.random() * 256)}, 1)`;
+  generateSplitColors(): SplitColor {
+
+    let splitColor = new SplitColor();
+
+    const red = Math.floor(Math.random() * 256);
+    const green = Math.floor(Math.random() * 256);
+    const blue = Math.floor(Math.random() * 256);
+
+    splitColor.backgroundColor = `rgba(${red}, ${green}, ${blue}, 1)`;
+
+    // determine whether text color should be black or white
+    if ((red*0.299 + green*0.587 + blue*0.114) > 127) {
+      splitColor.textColor = 'black';
+    } else{
+      splitColor.textColor = 'white';
+    }
+
+    return splitColor;
+
   }
 
   chartClicked(event: any) {
@@ -184,40 +218,23 @@ export class PaymentFlowComponent implements OnInit {
       if (activePoints.length > 0) {
         const clickedElementIndex = activePoints[0]._index;
         if (clickedElementIndex > 0) {
-          this.openDialog(clickedElementIndex-1); // remaining amount is at index 0, so I add -1
+          let paySplit = new PaymentSplit();
+          paySplit.splitIndex =  clickedElementIndex - 1; // remaining amount is at index 0, so I add -1
+          paySplit.updateValues(this.article.paymentSplits[clickedElementIndex-1]); // edit split option
+          this.selectedSplit = paySplit;
+        } else {
+          this.selectedSplit = null; // add new split option
         }
       }
     }
   }
 
-  openDialog(paySplitIndex: number): void {
-
-    // prep data to transfer to dialog
-    const splitDialogData = new SplitDialogData();
-    splitDialogData.article = this.article;
-    splitDialogData.paymentSplit = new PaymentSplit();
-    splitDialogData.paymentSplit.updateValues(this.paymentSplits[paySplitIndex]);
-    splitDialogData.paySplitIndex = paySplitIndex;
-
-    this.dialogRef = this.dialog.open(ConfigureSplitDialogComponent, {
-      data: {
-        dialogData: splitDialogData
-      }
-    });
-
-    const dialogEditSubscr = this.dialogRef.componentInstance.updateClicked.subscribe(
-      result => {
-        this.updatePaymentSplit(result);
-        dialogEditSubscr.unsubscribe();
-      }
-    );
-
-    const dialogRemoveSubscr = this.dialogRef.componentInstance.removeClicked.subscribe(
-      result => {
-        this.removePaymentSplit(result);
-        dialogRemoveSubscr.unsubscribe();
-      }
-    );
+  displayError(err: any): void {
+    if (err.error.message != null && err.error.message != '') {
+      this.snackBar.open(err.error.message);
+    } else {
+      this.snackBar.open(err.message);
+    }
   }
 
 }

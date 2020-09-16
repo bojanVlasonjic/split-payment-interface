@@ -1,25 +1,6 @@
-
-.heading {
-    text-align: center;
-    padding: 1ex;
+.content-holder {
     margin: 1ex;
 }
-
-.article-holder {
-    text-align: center;
-    font-size: 18px;
-}
-
-.identifier {
-    border-bottom: 1px solid black;
-}
-
-.text-value {
-    padding: 1ex;
-    margin-left: 2ex;
-    font-weight: bold;
-}
-
 
 .hint-text {
     padding: 1ex;
@@ -29,5 +10,7 @@
 .chart-holder {
     min-height: 500px;
 }
+
+
 
 

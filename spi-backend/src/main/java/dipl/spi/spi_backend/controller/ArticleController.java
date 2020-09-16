@@ -1,6 +1,7 @@
 package dipl.spi.spi_backend.controller;
 
 import dipl.spi.spi_backend.dto.ArticleDto;
+import dipl.spi.spi_backend.dto.ArticlePageDto;
 import dipl.spi.spi_backend.service.AccountService;
 import dipl.spi.spi_backend.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,25 +18,39 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
-    @GetMapping("/{userId}/{pageNum}")
-    public ResponseEntity<List<ArticleDto>> getUserArticles(@PathVariable Long userId,
-                                                            @PathVariable int pageNum) {
-
-        return ResponseEntity.ok(articleService.getUserArticles(userId, pageNum));
-
+    @GetMapping
+    public ResponseEntity<ArticlePageDto> searchArticles(@RequestParam(defaultValue = "") String name,
+                                                         @RequestParam(defaultValue = "0") int pageNum) {
+        return ResponseEntity.ok(articleService.searchArticles(name, pageNum));
     }
+
 
     @GetMapping("/{articleId}")
     public ResponseEntity<ArticleDto> getArticle(@PathVariable Long articleId) {
         return ResponseEntity.ok(new ArticleDto(articleService.findById(articleId)));
     }
 
-    @PostMapping("/{userId}")
-    public ResponseEntity<ArticleDto> createArticle(@RequestBody ArticleDto articleDto,
-                                                    @PathVariable Long userId) {
+
+    @PostMapping
+    public ResponseEntity<ArticleDto> createArticle(@RequestBody ArticleDto articleDto) {
         return new ResponseEntity<>(
-                articleService.createArticle(articleDto, userId),
+                articleService.createArticle(articleDto),
                 HttpStatus.CREATED
         );
     }
+
+
+    @PutMapping
+    public ResponseEntity<ArticleDto> updateArticle(@RequestBody ArticleDto articleDto) {
+        return ResponseEntity.ok(articleService.updateArticle(articleDto));
+    }
+
+
+    @DeleteMapping("/{articleId}")
+    public ResponseEntity<Long> deleteArticle(@PathVariable Long articleId) {
+
+        return ResponseEntity.ok(articleService.deleteArticle(articleId));
+    }
+
+
 }

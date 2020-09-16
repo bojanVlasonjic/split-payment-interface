@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input, OnDestroy, ViewChild } from '@angular/core';
 import { PaymentSplit } from 'src/app/data/payment-split';
 import { AccountService } from 'src/app/services/account.service';
 import { Account } from 'src/app/data/account';
@@ -7,6 +7,9 @@ import { map, startWith } from 'rxjs/operators';
 import { Article } from 'src/app/data/article';
 import { FormControl, Validators } from '@angular/forms';
 import { AccountObservableService } from 'src/app/services/account-observable.service';
+import { MatSnackBar } from '@angular/material';
+import { SplitColor } from 'src/app/data/split-color';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
   selector: 'app-manage-split',
@@ -15,7 +18,6 @@ import { AccountObservableService } from 'src/app/services/account-observable.se
 })
 export class ManageSplitComponent implements OnInit, OnDestroy {
 
-  //paymentSplit: PaymentSplit = new PaymentSplit();
   accountNumControl: FormControl = new FormControl('', [Validators.required]);
   splitType: string = '';
   investmentPercentage: number = 0;
@@ -28,38 +30,71 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
 
   @Output() createSplitEvent = new EventEmitter<PaymentSplit>();
   @Output() updateSplitEvent = new EventEmitter<PaymentSplit>();
+  @Output() removeSplitEvent = new EventEmitter<PaymentSplit>();
+
   @Input() article: Article;
-  @Input() paymentSplit: PaymentSplit;
+
+  paymentSplit: PaymentSplit;
+
+  @ViewChild("splitForm", {static: false}) splitForm: any;
 
   constructor(
+    private authService: AuthenticationService,
     private accountService: AccountService,
-    private accObservService: AccountObservableService
+    private accObservService: AccountObservableService,
+    private snackBar: MatSnackBar
     ) { }
 
-  ngOnInit() {
-    this.getUserAccounts();
-    this.initAutocompleteFilter();
+  @Input() set setPaymentSplit(value: PaymentSplit) {
 
-    if(this.paymentSplit == null) {
-      this.paymentSplit = new PaymentSplit();
+    if(value == null) {
+      if(this.splitForm != null) {
+        this.resetForm();
+      } else {
+        this.paymentSplit = new PaymentSplit();
+      }
       this.isUpdating = false;
+      this.paymentSplit.splitColor = this.generateSplitColors();
+      this.accountNumControl.enable();
     } else {
+      this.paymentSplit = value;
       this.accountNumControl.setValue(this.paymentSplit.account.number);
       this.isUpdating = true;
       this.accountNumControl.disable();
     }
+
+  }
+
+  ngOnInit() {
+    this.getUserAccounts();
+    this.initAutocompleteFilter();
     
     // update user accounts
     this.accObservSubscription = this.accObservService.getAccount().subscribe(
       data => {
-        const accIndex = this.getAccountIndexByNumber(data.number); 
-        if (accIndex == -1) {
-          this.userAccounts.push(data);
+        if (data != null) {
+          const accIndex = this.getAccountIndexByNumber(data.number); 
+          if (accIndex == -1) {
+            this.userAccounts.push(data);
+          } else {
+            this.userAccounts[accIndex] = data;
+          }
         } else {
-          this.userAccounts[accIndex] = data;
+          this.resetForm();
         }
+        this.paymentSplit.splitColor = this.generateSplitColors();
       }
     );
+  }
+
+  resetForm(): void {
+    this.accountNumControl.reset();
+    this.accountNumControl.enable();
+    this.splitForm.reset();
+    this.splitForm.submitted = false;
+    this.splitType = '';
+    this.paymentSplit = new PaymentSplit();
+ 
   }
 
   initAutocompleteFilter(): void {
@@ -70,12 +105,12 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
   }
 
   getUserAccounts(): void {
-    this.accountService.getUserAccounts(-1).subscribe(
+    this.accountService.getUserAccounts(this.authService.getAuthenticatedUser()).subscribe(
       data => {
         this.userAccounts = data;
       },
       err => {
-        console.log(err.error);
+        this.displayError(err);
       }
     );
   }
@@ -98,6 +133,12 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
     }
   }
 
+  removePaymentSplit(): void {
+    if (window.confirm(`Are you sure you want to remove payment split to ${this.paymentSplit.account.recipientName}?`)) {
+      this.removeSplitEvent.emit(this.paymentSplit);
+    }
+  }
+
   splitTypeChange(value: string) {
     this.splitType = value;
   }
@@ -114,7 +155,6 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
   onPercentualInputChange($event: any) {
     this.paymentSplit.amount = Math.round(($event.target.value/100) * this.article.price);
   }
-
 
   private _filter(value: string): Account[] {
     return this.userAccounts.filter(acc => acc.number.includes(value));
@@ -135,6 +175,42 @@ export class ManageSplitComponent implements OnInit, OnDestroy {
       }
     }
     return -1;
+  }
+
+  generateSplitColors(): SplitColor {
+
+    let splitColor = new SplitColor();
+
+    const red = Math.floor(Math.random() * 256);
+    const green = Math.floor(Math.random() * 256);
+    const blue = Math.floor(Math.random() * 256);
+
+    splitColor.backgroundColor = `rgba(${red}, ${green}, ${blue}, 1)`;
+
+    // determine whether text color should be black or white
+    if ((red*0.299 + green*0.587 + blue*0.114) > 127) {
+      splitColor.textColor = 'black';
+    } else{
+      splitColor.textColor = 'white';
+    }
+
+    return splitColor;
+
+  }
+
+  buttonColorStyle(): Object {
+    return {
+      'backgroundColor': 'red',
+      'color': 'blue'
+    };
+  }
+
+  displayError(err: any): void {
+    if (err.error.message != null && err.error.message != '') {
+      this.snackBar.open(err.error.message);
+    } else {
+      this.snackBar.open(err.message);
+    }
   }
 
   ngOnDestroy() {

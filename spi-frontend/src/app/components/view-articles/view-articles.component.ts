@@ -1,37 +1,79 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ArticleService } from 'src/app/services/article.service';
 import { Article } from 'src/app/data/article';
 import { MatSnackBar } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { ArticlePage } from 'src/app/data/article-page';
+import { ArticleObservableService } from 'src/app/services/article-observable.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-view-articles',
   templateUrl: './view-articles.component.html',
   styleUrls: ['./view-articles.component.css']
 })
-export class ViewArticlesComponent implements OnInit {
+export class ViewArticlesComponent implements OnInit, OnDestroy {
 
-  pageNum: number = 0;
-  userArticles: Array<Article> = [];
+  currentPage: number = 0;
+  articlePage: ArticlePage = new ArticlePage();
   requestFinished: boolean = true;
 
+  searchValue: string = '';
+  clickedArticleId: number = undefined;
+
+  windowWidth: number;
+  observSubscr: Subscription;
+
   constructor(
+    private activatedRoute: ActivatedRoute,
     private articleService: ArticleService,
+    private articleObservService: ArticleObservableService,
     private snackBar: MatSnackBar,
     private router: Router
   ) { }
 
   ngOnInit() {
-    this.getUserArticles();
+    this.windowWidth = window.innerWidth;
+    this.searchArticles();
+    if (this.router.url.includes('payment-flow')) {
+      this.highlightArticle();
+    }
+
+    this.observSubscr = this.articleObservService.getArticle().subscribe(
+      data => {
+        for (let i = 0; i < this.articlePage.articles.length; i++) {
+          if (this.articlePage.articles[i].id == data.id) {
+            this.articlePage.articles[i] = data;
+            break;
+          }
+        }
+      },
+      err => {
+        this.displayError(err);
+      }
+    );
+
   }
 
-  getUserArticles(): void {
-    this.requestFinished = false;
+  highlightArticle(): void {
+    const idStart = this.router.url.lastIndexOf('/');
+    const idStr = this.router.url.substr(idStart+1);
+    this.clickedArticleId = +idStr;
+  }
 
-    this.articleService.getUserArticles(-1, this.pageNum).subscribe(
+  displayError(err: any): void {
+    if (err.error.message != null && err.error.message != '') {
+      this.snackBar.open(err.error.message);
+    } else {
+      this.snackBar.open(err.message);
+    }
+  }
+
+  searchArticles(): void {
+    this.requestFinished = false;
+    this.articleService.searchArticles(this.searchValue, this.currentPage).subscribe(
       data => {
-        this.userArticles = data;
-        this.pageNum += 1; // to ensure I fetch new data the next time
+        this.articlePage = data;
       },
       err => {
         this.displayError(err);
@@ -43,16 +85,60 @@ export class ViewArticlesComponent implements OnInit {
     );
   }
 
-  displayError(err: any): void {
-    if (err.error.message != null) {
-      this.snackBar.open(err.error.message);
-    } else {
-      this.snackBar.open(err.message);
+  removeArticle(article: Article, index: number) {
+
+    if(!window.confirm(`Are you sure you want to delete article \"${article.name}\"`)) {
+      return;
     }
+
+    this.articleService.deleteArticle(article.id).subscribe(
+      data => {
+        if(this.articlePage.articles.length == 1 && this.currentPage > 0) {
+          this.currentPage--;
+        }
+        this.searchArticles();
+        this.snackBar.open('Article successfully deleted');
+        if (this.router.url.includes('payment-flow')) {
+          this.router.navigate(['my-articles']);
+        }
+      },
+      err => {
+        this.displayError(err);
+      }
+    )
   }
 
-  redirectToPaymentFlow(articleId: number) {
-    this.router.navigate([`/payment-flow/${articleId}`]);
+  performSearch(): void {
+    this.currentPage = 0;
+    this.searchArticles();
+  }
+
+  configurePaymentFlow(article: Article) {
+    this.articleClicked(article.id);
+    this.router.navigate([`payment-flow/${article.id}`], {relativeTo: this.activatedRoute});
+  }
+
+  editArticle(articleId: number) {
+    this.articleClicked(articleId);
+    this.router.navigate([`manage-article/${articleId}`], {relativeTo: this.activatedRoute});
+  }
+
+  articleClicked(id: number) {
+    this.clickedArticleId = id;
+  }
+  
+  nextPageClicked(): void {
+    this.currentPage++;
+    this.searchArticles();
+  }
+
+  previousPageClicked(): void {
+    this.currentPage--;
+    this.searchArticles();
+  }
+
+  ngOnDestroy() {
+    this.observSubscr.unsubscribe();
   }
 
 }
