@@ -1,22 +1,22 @@
 import { Component, OnInit } from "@angular/core";
-
-import { RouterExtensions } from "@nativescript/angular";
 import { MenuService } from "../shared/menu.service";
+import { RouterExtensions } from "@nativescript/angular";
 import { SegmentedBarItem } from "@nativescript/core/ui/segmented-bar";
 
 @Component({
-    selector: "Home",
-    templateUrl: "./home.component.html"
+    selector: "MyArticles",
+    templateUrl: "./my-articles.component.html"
 })
-export class HomeComponent implements OnInit {
-
+export class MyArticlesComponent implements OnInit {
 
     constructor(
         private menuService: MenuService,
-        private routerExt: RouterExtensions) { 
-        }
+        private routerExt: RouterExtensions) {
+        // Use the constructor to inject services.
+    }
 
     ngOnInit(): void {
+        // Use the "ngOnInit" handler to initialize data for the view.
     }
 
     get menuItems(): Array<SegmentedBarItem> {
@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit {
     }
 
     onSelectedMenuChange(index: number): void {
-        if (!isNaN(index) && index != 0) {
+        if (!isNaN(index) && index != 2) {
             const route = this.menuService.getItemRoute(index);
             this.routerExt.navigate([`../${route}`]);
         } 
