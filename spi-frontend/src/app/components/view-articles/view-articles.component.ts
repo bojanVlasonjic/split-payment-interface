@@ -6,6 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ArticlePage } from 'src/app/data/article-page';
 import { ArticleObservableService } from 'src/app/services/article-observable.service';
 import { Subscription } from 'rxjs';
+import { AppStateService } from 'src/app/services/app-state.service';
 
 @Component({
   selector: 'app-view-articles',
@@ -24,6 +25,7 @@ export class ViewArticlesComponent implements OnInit, OnDestroy {
   observSubscr: Subscription;
 
   constructor(
+    private appStateService: AppStateService,
     private activatedRoute: ActivatedRoute,
     private articleService: ArticleService,
     private articleObservService: ArticleObservableService,
@@ -32,6 +34,7 @@ export class ViewArticlesComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    
     this.searchArticles();
     if (this.router.url.includes('payment-flow')) {
       this.highlightArticle();
@@ -51,6 +54,10 @@ export class ViewArticlesComponent implements OnInit, OnDestroy {
       }
     );
 
+  }
+
+  get isMobileState(): boolean {
+    return this.appStateService.isMobileResolution();
   }
 
   highlightArticle(): void {

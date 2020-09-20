@@ -7,6 +7,7 @@ import { ArticleService } from 'src/app/services/article.service';
 import { PaymentSplitService } from 'src/app/services/payment-split.service';
 import { AccountObservableService } from 'src/app/services/account-observable.service';
 import { SplitColor } from 'src/app/data/split-color';
+import { AppStateService } from 'src/app/services/app-state.service';
 
 @Component({
   selector: 'app-payment-flow',
@@ -22,10 +23,14 @@ export class PaymentFlowComponent implements OnInit {
   pieChartType: string = 'pie';
   chartOptions: any = { maintainAspectRatio: false, responsive: true };
 
+  width: number = 300;
+  height: number = 600;
+
   article: Article;
   selectedSplit: PaymentSplit = null;
 
   constructor(
+    private appStateService: AppStateService,
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
@@ -39,10 +44,14 @@ export class PaymentFlowComponent implements OnInit {
     this.route.params.subscribe(
       params => {
         this.getArticle(params['id']);
-        console.log(this.labelColors[0].backgroundColor);
       }
     );
   }
+
+  get chartDimensionsClass(): string {
+    return this.appStateService.getChartClassForScreenSize();
+  }
+
 
   resetChart(): void {
     this.pieChartData = [];
