@@ -4,22 +4,19 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class AppStateService {
-
-  private _isMobileResolution: boolean;
   
   private smallScreenBound = 576; // in pixels
   private mediumScreenBound = 768;
 
   constructor() {
-    if (window.innerWidth < 768) {
-      this._isMobileResolution = true;
-    } else {
-      this._isMobileResolution = false;
-    }
   }
 
-  public isMobileResolution(): boolean {
-    return this._isMobileResolution;
+  public isDesktopResolution(): boolean {
+    return window.innerWidth > this.mediumScreenBound;
+  }
+
+  public isSmallScreen(): boolean  {
+    return window.innerWidth < this.smallScreenBound;
   }
 
   public getChartClassForScreenSize(): string {
@@ -32,4 +29,15 @@ export class AppStateService {
       return 'chart-small-screen';
     }
   }
+
+  scrollIfNeccessary(condition: boolean, position: number): void {
+
+    if (condition) { 
+      setTimeout(() => { // scroll to bottom
+        window.scrollTo({ left: 0, top: document.body.scrollHeight/position, behavior: "smooth" });
+      }, 100);
+    }
+
+  }
+ 
 }

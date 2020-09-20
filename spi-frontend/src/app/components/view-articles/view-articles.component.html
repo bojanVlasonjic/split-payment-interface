@@ -3,7 +3,7 @@
     <div class="row">
 
         <!-- Side nav -->
-        <div [ngClass]="isMobileState ? 'col-md-3 col-sm-12 side-nav' : 'col-md-3 col-sm-12 side-nav min-nav-height'">
+        <div [ngClass]="isDesktopState ? 'col-md-3 col-12 side-nav min-nav-height' : 'col-md-3 col-12 side-nav'">
             <div class="row">
                 
                 <div class="col-12 header">
@@ -59,7 +59,7 @@
                                 </div>
                     
                                 <div class="col-10">
-                                    <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                                    <div class="btn-group" role="group" aria-label="Basic example">
                                         <button type="button" class="btn btn-info" (click)="configurePaymentFlow(article)">
                                             Split config.
                                         </button>

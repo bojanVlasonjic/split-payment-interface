@@ -23,8 +23,7 @@ export class PaymentFlowComponent implements OnInit {
   pieChartType: string = 'pie';
   chartOptions: any = { maintainAspectRatio: false, responsive: true };
 
-  width: number = 300;
-  height: number = 600;
+  clickedSplitIndex: number;
 
   article: Article;
   selectedSplit: PaymentSplit = null;
@@ -108,6 +107,7 @@ export class PaymentFlowComponent implements OnInit {
         data.splitColor = paySplit.splitColor; 
         this.insertSplitInChart(data, true);
         this.accObservService.sendAccount(data.account);
+        this.snackBar.open('Payment split successfully saved and added to chart');
       },
       err => {
         this.displayError(err);
@@ -143,6 +143,7 @@ export class PaymentFlowComponent implements OnInit {
 
     this.paymentSplitService.updatePaymentSplit(paySplit).subscribe(
       data => {
+        data.splitColor = paySplit.splitColor; 
         this.updateSplitInChart(data, paySplit.splitIndex);
         this.snackBar.open('Payment split successfully updated');
       },
@@ -172,6 +173,7 @@ export class PaymentFlowComponent implements OnInit {
       data => {
         this.removeSplitFromChart(paySplit, paySplit.splitIndex);
         this.selectedSplit = null;
+        this.snackBar.open('Payment split successfully removed');
       },
       err => {
         this.displayError(err);
@@ -221,6 +223,7 @@ export class PaymentFlowComponent implements OnInit {
   }
 
   chartClicked(event: any) {
+
     if (event.active.length > 0) {
       const chart = event.active[0]._chart;
       const activePoints = chart.getElementAtEvent(event.event);
@@ -234,6 +237,12 @@ export class PaymentFlowComponent implements OnInit {
         } else {
           this.selectedSplit = null; // add new split option
         }
+
+        // scroll on double click in mobile
+        if(!this.appStateService.isDesktopResolution() && this.clickedSplitIndex == clickedElementIndex) {
+          this.appStateService.scrollIfNeccessary(!this.appStateService.isDesktopResolution(), 1);
+        }
+        this.clickedSplitIndex = clickedElementIndex;
       }
     }
   }

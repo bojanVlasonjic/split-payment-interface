@@ -56,8 +56,8 @@ export class ViewArticlesComponent implements OnInit, OnDestroy {
 
   }
 
-  get isMobileState(): boolean {
-    return this.appStateService.isMobileResolution();
+  get isDekstopState(): boolean {
+    return this.appStateService.isDesktopResolution();
   }
 
   highlightArticle(): void {
@@ -119,11 +119,17 @@ export class ViewArticlesComponent implements OnInit, OnDestroy {
   }
 
   configurePaymentFlow(article: Article) {
+    // scroll to chart if needed
+    this.appStateService.scrollIfNeccessary(this.appStateService.isSmallScreen(), 4);
+
     this.articleClicked(article.id);
     this.router.navigate([`payment-flow/${article.id}`], {relativeTo: this.activatedRoute});
   }
 
   editArticle(articleId: number) {
+    // scroll to bottom if needed
+    this.appStateService.scrollIfNeccessary(!this.appStateService.isDesktopResolution(), 1);
+    
     this.articleClicked(articleId);
     this.router.navigate([`manage-article/${articleId}`], {relativeTo: this.activatedRoute});
   }
