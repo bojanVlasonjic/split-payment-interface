@@ -1,18 +1,20 @@
 <div class="container">
     <div class="row content-holder">
 
-        <div class="col-md-6">
-            <canvas baseChart
-                    [data]="pieChartData"
-                    [labels]="pieChartLabels"
-                    [chartType]="pieChartType"
-                    [options]="chartOptions"
-                    [colors]="labelColors"
-                    (chartClick)="chartClicked($event)">
-            </canvas>
+        <div class="col-md-6 col-sm-12">
+            <div [ngClass]="chartDimensionsClass">
+                <canvas baseChart id="split-chart"
+                        [data]="pieChartData"
+                        [labels]="pieChartLabels"
+                        [chartType]="pieChartType"
+                        [options]="chartOptions"
+                        [colors]="labelColors"
+                        (chartClick)="chartClicked($event)">
+                </canvas>
+            </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 col-sm-12">
             <h4 class="option-header" *ngIf="selectedSplit == null">Insert new split</h4>
             <h4 class="option-header" *ngIf="selectedSplit != null">Edit split</h4>
             <app-manage-split [article]="article" [setPaymentSplit]="selectedSplit" 

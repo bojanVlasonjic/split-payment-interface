@@ -1,6 +1,6 @@
 <div class="container">
     <div class="row justify-content-md-center">
-        <div class="col-md-8 col-sm-10">
+        <div class="col-md-8 col-sm-10" style="padding: 1ex;">
             
             <h3 class="heading"> New article </h3>
 
@@ -27,15 +27,18 @@
                     </small> 
                 </div>
 
-                <button type="submit" class="btn btn-dark" (click)="createArticle()"  *ngIf="!isEditing"
+                <button [ngClass]="isDesktopState ? 'btn btn-dark' : 'btn btn-dark full-width'"
+                    (click)="createArticle()"  *ngIf="!isEditing"  type="submit" 
                     [disabled]="!articleForm.form.valid || article.price <= 0">
                     Add article
                 </button>
 
-                <button type="submit" class="btn btn-dark" (click)="updateArticle()"  *ngIf="isEditing"
+                <button [ngClass]="isDesktopState ? 'btn btn-dark' : 'btn btn-dark full-width'"
+                    (click)="updateArticle()"  *ngIf="isEditing"  type="submit" 
                     [disabled]="!articleForm.form.valid || article.price <= 0">
                     Update article
                 </button>
+                
             </form>
         </div>
     </div>

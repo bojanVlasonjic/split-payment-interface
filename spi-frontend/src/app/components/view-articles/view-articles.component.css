@@ -16,7 +16,7 @@
 }
 
 .card {
-    max-width: 18rem;
+    max-width: 19rem;
 }
 
 .card-body {
@@ -44,7 +44,10 @@
 .side-nav {
     background-image: url(../../../assets/images/grey_wash_wall.png);
     background-repeat:repeat;
-    min-height: 95vh;
+}
+
+.min-nav-height {
+    min-height: 91vh;
 }
 
 .centered-content {

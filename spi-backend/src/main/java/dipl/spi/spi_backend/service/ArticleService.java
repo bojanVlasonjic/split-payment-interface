@@ -27,7 +27,7 @@ public class ArticleService {
     @Autowired
     private PaymentSplitService paymentSplitService;
 
-    private static final int elementsPerPage = 5;
+    private static final int elementsPerPage = 4;
 
 
     public ArticlePageDto searchArticles(String name, int pageNum) {

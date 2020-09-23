@@ -6,6 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ArticlePage } from 'src/app/data/article-page';
 import { ArticleObservableService } from 'src/app/services/article-observable.service';
 import { Subscription } from 'rxjs';
+import { AppStateService } from 'src/app/services/app-state.service';
 
 @Component({
   selector: 'app-view-articles',
@@ -24,6 +25,7 @@ export class ViewArticlesComponent implements OnInit, OnDestroy {
   observSubscr: Subscription;
 
   constructor(
+    private appStateService: AppStateService,
     private activatedRoute: ActivatedRoute,
     private articleService: ArticleService,
     private articleObservService: ArticleObservableService,
@@ -32,6 +34,7 @@ export class ViewArticlesComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    
     this.searchArticles();
     if (this.router.url.includes('payment-flow')) {
       this.highlightArticle();
@@ -51,6 +54,10 @@ export class ViewArticlesComponent implements OnInit, OnDestroy {
       }
     );
 
+  }
+
+  get isDekstopState(): boolean {
+    return this.appStateService.isDesktopResolution();
   }
 
   highlightArticle(): void {
@@ -112,11 +119,17 @@ export class ViewArticlesComponent implements OnInit, OnDestroy {
   }
 
   configurePaymentFlow(article: Article) {
+    // scroll to chart if needed
+    this.appStateService.scrollIfNeccessary(this.appStateService.isSmallScreen(), 4);
+
     this.articleClicked(article.id);
     this.router.navigate([`payment-flow/${article.id}`], {relativeTo: this.activatedRoute});
   }
 
   editArticle(articleId: number) {
+    // scroll to bottom if needed
+    this.appStateService.scrollIfNeccessary(!this.appStateService.isDesktopResolution(), 1);
+    
     this.articleClicked(articleId);
     this.router.navigate([`manage-article/${articleId}`], {relativeTo: this.activatedRoute});
   }

@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleObservableService } from 'src/app/services/article-observable.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
+import { AppStateService } from 'src/app/services/app-state.service';
 
 @Component({
   selector: 'app-manage-article',
@@ -18,6 +19,7 @@ export class ManageArticleComponent implements OnInit {
   @ViewChild("articleForm", {static: false}) articleForm: any;
 
   constructor(
+    private appStateService: AppStateService,
     private authService: AuthenticationService,
     private articleService: ArticleService,
     private articleObservService: ArticleObservableService,
@@ -38,6 +40,10 @@ export class ManageArticleComponent implements OnInit {
         }
       }
     );
+  }
+
+  get isDesktopState(): boolean {
+    return this.appStateService.isDesktopResolution();
   }
 
   createArticle(): void {

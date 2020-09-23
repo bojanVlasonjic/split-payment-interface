@@ -2,14 +2,24 @@
     margin: 1ex;
 }
 
-.hint-text {
-    padding: 1ex;
-    font-size: 17px;
+.chart-medium-screen {
+    position: relative;
+    width: 450px;
+    height: 450px;
 }
 
-.chart-holder {
-    min-height: 500px;
+.chart-small-screen {
+    position: relative;
+    width: 260px;
+    height: 340px;
 }
+
+.chart-large-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
 
 
 

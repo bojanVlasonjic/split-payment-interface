@@ -7,6 +7,7 @@ import { ArticleService } from 'src/app/services/article.service';
 import { PaymentSplitService } from 'src/app/services/payment-split.service';
 import { AccountObservableService } from 'src/app/services/account-observable.service';
 import { SplitColor } from 'src/app/data/split-color';
+import { AppStateService } from 'src/app/services/app-state.service';
 
 @Component({
   selector: 'app-payment-flow',
@@ -22,10 +23,13 @@ export class PaymentFlowComponent implements OnInit {
   pieChartType: string = 'pie';
   chartOptions: any = { maintainAspectRatio: false, responsive: true };
 
+  clickedSplitIndex: number;
+
   article: Article;
   selectedSplit: PaymentSplit = null;
 
   constructor(
+    private appStateService: AppStateService,
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
@@ -39,10 +43,14 @@ export class PaymentFlowComponent implements OnInit {
     this.route.params.subscribe(
       params => {
         this.getArticle(params['id']);
-        console.log(this.labelColors[0].backgroundColor);
       }
     );
   }
+
+  get chartDimensionsClass(): string {
+    return this.appStateService.getChartClassForScreenSize();
+  }
+
 
   resetChart(): void {
     this.pieChartData = [];
@@ -99,6 +107,7 @@ export class PaymentFlowComponent implements OnInit {
         data.splitColor = paySplit.splitColor; 
         this.insertSplitInChart(data, true);
         this.accObservService.sendAccount(data.account);
+        this.snackBar.open('Payment split successfully saved and added to chart');
       },
       err => {
         this.displayError(err);
@@ -134,6 +143,7 @@ export class PaymentFlowComponent implements OnInit {
 
     this.paymentSplitService.updatePaymentSplit(paySplit).subscribe(
       data => {
+        data.splitColor = paySplit.splitColor; 
         this.updateSplitInChart(data, paySplit.splitIndex);
         this.snackBar.open('Payment split successfully updated');
       },
@@ -163,6 +173,7 @@ export class PaymentFlowComponent implements OnInit {
       data => {
         this.removeSplitFromChart(paySplit, paySplit.splitIndex);
         this.selectedSplit = null;
+        this.snackBar.open('Payment split successfully removed');
       },
       err => {
         this.displayError(err);
@@ -212,6 +223,7 @@ export class PaymentFlowComponent implements OnInit {
   }
 
   chartClicked(event: any) {
+
     if (event.active.length > 0) {
       const chart = event.active[0]._chart;
       const activePoints = chart.getElementAtEvent(event.event);
@@ -225,6 +237,12 @@ export class PaymentFlowComponent implements OnInit {
         } else {
           this.selectedSplit = null; // add new split option
         }
+
+        // scroll on double click in mobile
+        if(!this.appStateService.isDesktopResolution() && this.clickedSplitIndex == clickedElementIndex) {
+          this.appStateService.scrollIfNeccessary(!this.appStateService.isDesktopResolution(), 1);
+        }
+        this.clickedSplitIndex = clickedElementIndex;
       }
     }
   }
