@@ -56,7 +56,7 @@ export class ViewArticlesComponent implements OnInit, OnDestroy {
 
   }
 
-  get isDekstopState(): boolean {
+  isDekstopState(): boolean {
     return this.appStateService.isDesktopResolution();
   }
 
