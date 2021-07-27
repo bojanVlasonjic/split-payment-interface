@@ -2,6 +2,8 @@ package dipl.spi.spi_backend.controller;
 
 import dipl.spi.spi_backend.dto.ArticleDto;
 import dipl.spi.spi_backend.dto.ArticlePageDto;
+import dipl.spi.spi_backend.mappers.ArticleMapper;
+import dipl.spi.spi_backend.model.Article;
 import dipl.spi.spi_backend.service.AccountService;
 import dipl.spi.spi_backend.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +20,23 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
+    @Autowired
+    private ArticleMapper articleMapper;
+
     @GetMapping
     public ResponseEntity<ArticlePageDto> searchArticles(@RequestParam(defaultValue = "") String name,
                                                          @RequestParam(defaultValue = "0") int pageNum) {
-        return ResponseEntity.ok(articleService.searchArticles(name, pageNum));
+        ArticlePageDto articlePageDto = articleService.searchArticles(name, pageNum);
+        return ResponseEntity.ok(articlePageDto);
     }
 
 
     @GetMapping("/{articleId}")
     public ResponseEntity<ArticleDto> getArticle(@PathVariable Long articleId) {
-        return ResponseEntity.ok(new ArticleDto(articleService.findById(articleId)));
+        ArticleDto articleDto = articleMapper.articleToArticleDto(
+                articleService.findById(articleId)
+        );
+        return ResponseEntity.ok(articleDto);
     }
 
 
@@ -47,7 +56,7 @@ public class ArticleController {
 
 
     @DeleteMapping("/{articleId}")
-    public ResponseEntity<Long> deleteArticle(@PathVariable Long articleId) {
+    public ResponseEntity<Boolean> deleteArticle(@PathVariable Long articleId) {
 
         return ResponseEntity.ok(articleService.deleteArticle(articleId));
     }

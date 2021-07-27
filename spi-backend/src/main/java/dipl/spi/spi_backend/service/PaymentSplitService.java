@@ -3,6 +3,8 @@ package dipl.spi.spi_backend.service;
 import dipl.spi.spi_backend.dto.PaymentSplitDto;
 import dipl.spi.spi_backend.exception.ApiBadRequestException;
 import dipl.spi.spi_backend.exception.ApiNotFoundException;
+import dipl.spi.spi_backend.mappers.AccountMapper;
+import dipl.spi.spi_backend.mappers.PaymentSplitMapper;
 import dipl.spi.spi_backend.model.Account;
 import dipl.spi.spi_backend.model.AppUser;
 import dipl.spi.spi_backend.model.Article;
@@ -30,12 +32,18 @@ public class PaymentSplitService {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private PaymentSplitMapper paymentSplitMapper;
+
+    @Autowired
+    private AccountMapper accountMapper;
+
 
     public List<PaymentSplitDto> getPaymentSplitsForArticle(Long articleId) {
         return paymentSplitRepository
                 .findByArticleId(articleId)
                 .stream()
-                .map(PaymentSplitDto::new)
+                .map(ps -> paymentSplitMapper.paymentSplitToPaymentSplitDto(ps))
                 .collect(Collectors.toList());
     }
 
@@ -58,12 +66,16 @@ public class PaymentSplitService {
 
         // check if the account has already been saved or the user selected an existing one
         Optional<Account> accountOpt = accountService.findAccountById(paymentSplitDto.getAccount().getId());
-        account = accountOpt.orElseGet(() -> new Account(paymentSplitDto.getAccount(), user));
+        account = accountOpt.orElseGet(() ->
+                accountMapper.accountDtoToAccount(paymentSplitDto.getAccount(), user)
+        );
 
-        PaymentSplit paymentSplit = new PaymentSplit(paymentSplitDto, user, article, account);
+        PaymentSplit paymentSplit = paymentSplitMapper.paymentSplitDtoToPaymentSplit(paymentSplitDto,
+                article, account);
 
         try {
-            return new PaymentSplitDto(paymentSplitRepository.save(paymentSplit));
+            paymentSplitRepository.save(paymentSplit);
+            return paymentSplitMapper.paymentSplitToPaymentSplitDto(paymentSplit);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -84,7 +96,8 @@ public class PaymentSplitService {
         paymentSplit.updateValues(paymentSplitDto);
 
         try {
-            return new PaymentSplitDto(paymentSplitRepository.save(paymentSplit));
+            paymentSplitRepository.save(paymentSplit);
+            return paymentSplitMapper.paymentSplitToPaymentSplitDto(paymentSplit);
         } catch (Exception ex) {
             throw new ApiBadRequestException("Something went wrong. Please refresh the page and try again");
         }
@@ -92,7 +105,7 @@ public class PaymentSplitService {
     }
 
 
-    public Long deletePaymentSplit(Long splitId) {
+    public boolean deletePaymentSplit(Long splitId) {
 
         Optional<PaymentSplit> paySplitOpt = paymentSplitRepository.findById(splitId);
 
@@ -108,7 +121,7 @@ public class PaymentSplitService {
                     "Please refresh the page and try again.");
         }
 
-        return paySplitOpt.get().getId();
+        return true;
     }
 
 

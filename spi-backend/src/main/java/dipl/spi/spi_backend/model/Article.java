@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
 @Getter
 @Setter
 public class Article {
@@ -31,14 +30,8 @@ public class Article {
     @ManyToOne(fetch = FetchType.LAZY)
     private AppUser user;
 
-
-    public Article(ArticleDto articleDto, AppUser appUser) {
-        this.id = articleDto.getId();
-        this.name = articleDto.getName();
-        this.price = articleDto.getPrice();
-
-        this.paymentSplits = new ArrayList<>();
-        this.user = appUser;
+    public Article() {
+        paymentSplits = new ArrayList<>();
     }
 
     public void updateValues(ArticleDto articleDto) {

@@ -27,16 +27,6 @@ public class PaymentSplit {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Article article;
 
-    public PaymentSplit(PaymentSplitDto paymentSplitDto, AppUser user, Article article, Account account) {
-        this.id = paymentSplitDto.getId();
-        this.amount = paymentSplitDto.getAmount();
-        this.article = article;
-
-        if(account != null) {
-            this.account = account;
-        }
-
-    }
 
     public void updateValues(PaymentSplitDto paymentSplitDto) {
         this.amount = paymentSplitDto.getAmount();

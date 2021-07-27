@@ -15,12 +15,4 @@ public class PaymentSplitDto {
     private double amount;
     private AccountDto account;
 
-    public PaymentSplitDto(PaymentSplit paySplit) {
-        this.id = paySplit.getId();
-        this.articleId = paySplit.getArticle().getId();
-        this.amount = paySplit.getAmount();
-        this.account = new AccountDto(paySplit.getAccount());
-
-    }
-
 }

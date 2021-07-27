@@ -17,14 +17,4 @@ public class AccountDto {
     private String recipientName;
     private String recipientAddress;
 
-
-    public AccountDto(Account account) {
-        this.id = account.getId();
-        this.userId = account.getCreator().getId();
-
-        this.number = account.getNumber();
-        this.recipientName = account.getRecipientName();
-        this.recipientAddress = account.getRecipientAddress();
-    }
-
 }

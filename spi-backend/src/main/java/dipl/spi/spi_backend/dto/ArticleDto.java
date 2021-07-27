@@ -21,15 +21,4 @@ public class ArticleDto {
 
     private List<PaymentSplitDto> paymentSplits;
 
-    public ArticleDto(Article article) {
-        this.id = article.getId();
-        this.userId = article.getUser().getId();
-        this.name = article.getName();
-        this.price = article.getPrice();
-
-        this.paymentSplits = article.getPaymentSplits()
-                .stream()
-                .map(PaymentSplitDto::new)
-                .collect(Collectors.toList());
-    }
 }

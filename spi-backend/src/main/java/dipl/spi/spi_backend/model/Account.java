@@ -30,17 +30,6 @@ public class Account {
     private AppUser creator;
 
 
-    public Account(AccountDto accountDto, AppUser appUser) {
-        this.id = accountDto.getId();
-        this.number = accountDto.getNumber();
-        this.recipientName = accountDto.getRecipientName();
-        this.recipientAddress = accountDto.getRecipientAddress();
-
-        if(appUser != null) {
-            this.creator = appUser;
-        }
-    }
-
     public void updateValues(AccountDto accountDto) {
         this.recipientName = accountDto.getRecipientName();
         this.recipientAddress = accountDto.getRecipientAddress();

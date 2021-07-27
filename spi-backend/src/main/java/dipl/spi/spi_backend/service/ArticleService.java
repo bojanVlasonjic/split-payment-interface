@@ -4,6 +4,7 @@ import dipl.spi.spi_backend.dto.ArticleDto;
 import dipl.spi.spi_backend.dto.ArticlePageDto;
 import dipl.spi.spi_backend.exception.ApiBadRequestException;
 import dipl.spi.spi_backend.exception.ApiNotFoundException;
+import dipl.spi.spi_backend.mappers.ArticleMapper;
 import dipl.spi.spi_backend.model.AppUser;
 import dipl.spi.spi_backend.model.Article;
 import dipl.spi.spi_backend.repository.ArticleRepository;
@@ -11,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ArticleService {
@@ -27,6 +26,9 @@ public class ArticleService {
     @Autowired
     private PaymentSplitService paymentSplitService;
 
+    @Autowired
+    private ArticleMapper articleMapper;
+
     private static final int elementsPerPage = 4;
 
 
@@ -39,7 +41,7 @@ public class ArticleService {
         Pageable pageable = PageRequest.of(pageNum, elementsPerPage, Sort.by("name").ascending());
         Page<Article> articlePage = articleRepository.findByUserIdAndNameContaining(-1L, name ,pageable);
 
-        return new ArticlePageDto(articlePage);
+        return articleMapper.articlePageToArticlePageDto(articlePage);
 
     }
 
@@ -56,10 +58,11 @@ public class ArticleService {
     public ArticleDto createArticle(ArticleDto articleDto) {
 
         AppUser user = userService.findUserById(articleDto.getUserId());
-        Article article = new Article(articleDto, user);
+        Article article = articleMapper.articleDtoToArticle(articleDto, user);
 
         try {
-            return new ArticleDto(articleRepository.save(article));
+            articleRepository.save(article);
+            return articleMapper.articleToArticleDto(article);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ApiBadRequestException("Failed to save article. Please refresh the page and try again");
@@ -86,7 +89,7 @@ public class ArticleService {
         return articleDto;
     }
 
-    public Long deleteArticle(Long articleId) {
+    public boolean deleteArticle(Long articleId) {
 
         Article article = this.findById(articleId);
 
@@ -97,6 +100,6 @@ public class ArticleService {
             throw new ApiBadRequestException("Failed to delete article. Please refresh the page and try again");
         }
 
-        return article.getId();
+        return true;
     }
 }

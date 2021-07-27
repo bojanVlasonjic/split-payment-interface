@@ -2,6 +2,7 @@ package dipl.spi.spi_backend.service;
 
 import dipl.spi.spi_backend.dto.AccountDto;
 import dipl.spi.spi_backend.exception.ApiBadRequestException;
+import dipl.spi.spi_backend.mappers.AccountMapper;
 import dipl.spi.spi_backend.model.Account;
 import dipl.spi.spi_backend.model.AppUser;
 import dipl.spi.spi_backend.repository.AccountRepository;
@@ -21,13 +22,16 @@ public class AccountService {
     @Autowired
     private AppUserService userService;
 
+    @Autowired
+    private AccountMapper accountMapper;
+
 
     public List<AccountDto> getAccountsForUser(Long userId) {
 
         return accountRepository
                 .findByCreatorId(userId)
                 .stream()
-                .map(AccountDto::new)
+                .map(ac -> accountMapper.accountToAccountDto(ac))
                 .collect(Collectors.toList());
     }
     
@@ -39,9 +43,10 @@ public class AccountService {
         }
 
         AppUser user = userService.findUserById(accountDto.getUserId());
-        Account account = new Account(accountDto, user);
+        Account account = accountMapper.accountDtoToAccount(accountDto, user);
 
-        return new AccountDto(accountRepository.save(account));
+        accountRepository.save(account);
+        return accountMapper.accountToAccountDto(account);
     }
 
 
